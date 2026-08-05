@@ -1,134 +1,841 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Gbolahan Babalobi | Power BI Portfolio</title>
-  <style>
-    body { margin:0; font-family:system-ui,Arial,sans-serif; background:#0f1221; color:#e8ecff; }
-    header { text-align:center; padding:40px 20px 20px; }
-    header h1 { margin:0; font-size:2rem; }
-    header p { margin:8px 0 0; color:#aab3d9; }
-    .wrap { max-width:1100px; margin:0 auto; padding:20px; }
-    .grid { display:grid; gap:20px; grid-template-columns:1fr; }
-    .card { background:#161a2f; border-radius:12px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.4); }
-    .carousel { position:relative; overflow:hidden; }
-    .carousel img { width:100%; display:none; object-fit:cover; aspect-ratio:16/9; }
-    .carousel img.active { display:block; }
-    .carousel button { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); border:none; color:white; font-size:1.4rem; padding:6px 10px; cursor:pointer; }
-    .carousel button.prev { left:10px; } 
-    .carousel button.next { right:10px; }
-    .body { padding:16px; }
-    .title { margin:0 0 8px; font-size:1.2rem; }
-    .desc { margin:0 0 12px; color:#aab3d9; font-size:0.95rem; }
-    .actions a { display:inline-block; margin-right:10px; padding:8px 12px; border-radius:6px; background:#6ea8fe20; color:#e8ecff; text-decoration:none; border:1px solid #6ea8fe40; font-size:0.9rem; }
-    .actions a:hover { background:#6ea8fe40; }
-    footer { text-align:center; padding:20px; font-size:0.9rem; color:#aab3d9; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gbolahan Babalobi — Data Analyst &amp; AI Training Specialist</title>
+<meta name="description" content="Gbolahan Babalobi — Data Analyst and AI Training / Data Annotation Specialist based in Lagos, Nigeria. Power BI, SQL, Excel, and AI data annotation." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0e1c30;
+    --ink-2:#142943;
+    --ink-3:#1c3556;
+    --line:rgba(111,195,255,0.14);
+    --line-soft:rgba(111,195,255,0.07);
+    --paper:#eef3f8;
+    --paper-dim:#9fb2c9;
+    --cyan:#6fc3ff;
+    --cyan-dim:#3d78a8;
+    --amber:#f2a53c;
+    --amber-dim:#c98530;
+    --radius:10px;
+    --maxw:1120px;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'IBM Plex Mono', monospace;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{ max-width:100%; display:block; }
+  a{ color:var(--cyan); }
+  section{ scroll-margin-top:84px; }
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 24px; }
+
+  ::selection{ background:var(--amber); color:var(--ink); }
+
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--amber);
+    outline-offset:3px;
+  }
+
+  /* ---------- Eyebrow / Sheet labels ---------- */
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px; height:1px;
+    background:var(--cyan-dim);
+    display:inline-block;
+  }
+
+  h2.section-title{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:clamp(1.6rem, 3.4vw, 2.3rem);
+    margin:0 0 20px;
+    color:var(--paper);
+    letter-spacing:-0.01em;
+  }
+
+  /* ---------- Reveal on scroll ---------- */
+  [data-reveal]{
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  [data-reveal].in-view{ opacity:1; transform:translateY(0); }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    [data-reveal]{ opacity:1; transform:none; transition:none; }
+    *{ animation:none !important; transition:none !important; }
+  }
+
+  /* ---------- Nav ---------- */
+  header.nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(14,28,48,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:var(--maxw); margin:0 auto; padding:0 24px;
+    height:64px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{
+    font-family:var(--font-mono);
+    font-weight:600; font-size:0.95rem;
+    color:var(--paper); text-decoration:none;
+    letter-spacing:0.03em;
+    display:flex; align-items:baseline; gap:6px;
+  }
+  .brand span{ color:var(--amber); }
+  nav.links{ display:flex; gap:28px; align-items:center; }
+  nav.links a{
+    color:var(--paper-dim); text-decoration:none;
+    font-size:0.88rem; font-family:var(--font-mono);
+    letter-spacing:0.02em;
+    position:relative; padding:4px 0;
+    transition:color .2s ease;
+  }
+  nav.links a::after{
+    content:""; position:absolute; left:0; right:0; bottom:-2px; height:1px;
+    background:var(--amber); transform:scaleX(0); transform-origin:left;
+    transition:transform .25s ease;
+  }
+  nav.links a:hover, nav.links a.active{ color:var(--paper); }
+  nav.links a.active::after, nav.links a:hover::after{ transform:scaleX(1); }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:0.82rem; letter-spacing:0.03em;
+    text-decoration:none; padding:10px 18px; border-radius:6px;
+    border:1px solid var(--amber); color:var(--amber);
+    transition:background .2s ease, color .2s ease, transform .2s ease;
+    cursor:pointer; background:transparent;
+  }
+  .btn:hover{ background:var(--amber); color:var(--ink); transform:translateY(-1px); }
+  .btn.solid{ background:var(--amber); color:var(--ink); }
+  .btn.solid:hover{ background:var(--amber-dim); border-color:var(--amber-dim); }
+  .btn.ghost{ border-color:var(--line); color:var(--paper-dim); }
+  .btn.ghost:hover{ background:var(--ink-3); color:var(--paper); }
+
+  .nav-cta{ display:flex; gap:12px; align-items:center; }
+  .menu-toggle{
+    display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:8px;
+  }
+  .menu-toggle span{ width:22px; height:2px; background:var(--paper); display:block; transition:transform .25s ease, opacity .25s ease; }
+  .menu-toggle.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .menu-toggle.open span:nth-child(2){ opacity:0; }
+  .menu-toggle.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    padding:150px 0 90px;
+    overflow:hidden;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:42px 42px;
+  }
+  .hero::before, .hero::after{
+    content:""; position:absolute; width:26px; height:26px;
+    border-left:1px solid var(--cyan-dim); border-top:1px solid var(--cyan-dim);
+    opacity:.6;
+  }
+  .hero::before{ top:24px; left:24px; }
+  .hero::after{ bottom:24px; right:24px; border-left:none; border-top:none; border-right:1px solid var(--cyan-dim); border-bottom:1px solid var(--cyan-dim); }
+
+  .hero-grid{
+    display:grid; grid-template-columns:1.25fr 0.85fr; gap:56px; align-items:center;
+  }
+  .hero-role-line{
+    font-family:var(--font-mono); font-size:0.95rem; color:var(--amber);
+    min-height:1.4em; letter-spacing:0.02em;
+  }
+  .hero-role-line .cursor{ display:inline-block; width:2px; background:var(--amber); margin-left:2px; animation:blink 1s step-end infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  h1.hero-name{
+    font-family:var(--font-display); font-weight:700;
+    font-size:clamp(2.6rem, 6vw, 4.3rem);
+    line-height:1.03; letter-spacing:-0.02em;
+    margin:14px 0 18px; color:var(--paper);
+  }
+  .hero-copy{
+    color:var(--paper-dim); font-size:1.05rem; max-width:52ch; margin:0 0 30px;
+  }
+  .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; }
+
+  .titleblock{
+    border:1px solid var(--line);
+    background:var(--ink-2);
+    border-radius:var(--radius);
+    overflow:hidden;
+    position:relative;
+  }
+  .titleblock .photo-wrap{
+    padding:28px 28px 20px;
+    display:flex; justify-content:center;
+    background:
+      radial-gradient(circle at center, var(--line-soft) 0%, transparent 70%);
+  }
+  .photo-ring{
+    position:relative; width:150px; height:150px;
+  }
+  .photo-ring img{
+    width:150px; height:150px; border-radius:50%;
+    object-fit:cover; border:2px solid var(--cyan-dim);
+  }
+  .photo-ring::before{
+    content:""; position:absolute; inset:-10px;
+    border:1px dashed var(--cyan-dim); border-radius:50%;
+    opacity:.55;
+  }
+  .tb-rows{ border-top:1px solid var(--line); }
+  .tb-row{
+    display:flex; justify-content:space-between; gap:12px;
+    padding:11px 20px; border-bottom:1px solid var(--line);
+    font-family:var(--font-mono); font-size:0.76rem;
+  }
+  .tb-row:last-child{ border-bottom:none; }
+  .tb-row .k{ color:var(--paper-dim); letter-spacing:0.08em; }
+  .tb-row .v{ color:var(--paper); text-align:right; }
+
+  @media (max-width:860px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .titleblock{ max-width:340px; margin:0 auto; }
+  }
+
+  /* ---------- About ---------- */
+  .about{ padding:100px 0; border-top:1px solid var(--line); }
+  .about-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start;
+  }
+  .about p{ color:var(--paper-dim); margin:0 0 16px; font-size:1.02rem; }
+  .about strong{ color:var(--paper); font-weight:600; }
+  .stat-list{ display:grid; gap:18px; }
+  .stat{
+    border:1px solid var(--line); border-radius:var(--radius);
+    background:var(--ink-2); padding:18px 20px;
+  }
+  .stat .num{ font-family:var(--font-mono); color:var(--amber); font-size:1.5rem; font-weight:600; }
+  .stat .label{ color:var(--paper-dim); font-size:0.85rem; margin-top:4px; }
+
+  @media (max-width:860px){ .about-grid{ grid-template-columns:1fr; } }
+
+  /* ---------- Skills ---------- */
+  .skills{ padding:100px 0; border-top:1px solid var(--line); }
+  .skills-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+  .skill-card{
+    border:1px solid var(--line); border-radius:var(--radius);
+    background:var(--ink-2); padding:24px 24px 20px;
+    transition:border-color .25s ease, transform .25s ease;
+  }
+  .skill-card:hover{ border-color:var(--cyan-dim); transform:translateY(-3px); }
+  .skill-card .code{
+    font-family:var(--font-mono); color:var(--cyan); font-size:0.78rem;
+    letter-spacing:0.1em; margin-bottom:10px; display:block;
+  }
+  .skill-card h3{ margin:0 0 12px; font-family:var(--font-display); font-size:1.1rem; color:var(--paper); font-weight:600; }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    font-family:var(--font-mono); font-size:0.76rem;
+    border:1px solid var(--line); border-radius:5px;
+    padding:5px 10px; color:var(--paper-dim);
+  }
+  @media (max-width:720px){ .skills-grid{ grid-template-columns:1fr; } }
+
+  /* ---------- Experience ---------- */
+  .experience{ padding:100px 0; border-top:1px solid var(--line); }
+  .timeline{ position:relative; padding-left:28px; }
+  .timeline::before{
+    content:""; position:absolute; left:5px; top:6px; bottom:6px; width:1px;
+    background:var(--line);
+  }
+  .tl-item{ position:relative; padding-bottom:38px; }
+  .tl-item:last-child{ padding-bottom:0; }
+  .tl-item::before{
+    content:""; position:absolute; left:-28px; top:4px;
+    width:11px; height:11px; border-radius:50%;
+    background:var(--ink); border:2px solid var(--cyan);
+  }
+  .tl-item.minor::before{ border-color:var(--paper-dim); }
+  .tl-head{ display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; margin-bottom:6px; }
+  .tl-head h3{ margin:0; font-family:var(--font-display); font-size:1.15rem; color:var(--paper); font-weight:600; }
+  .tl-meta{ font-family:var(--font-mono); font-size:0.78rem; color:var(--amber); }
+  .tl-org{ color:var(--paper-dim); font-size:0.92rem; margin:0 0 10px; }
+  .tl-item ul{ margin:0; padding-left:18px; color:var(--paper-dim); }
+  .tl-item li{ margin-bottom:6px; }
+  .tl-item.minor .tl-org{ margin-bottom:0; }
+
+  /* ---------- Certifications ---------- */
+  .certs{ padding:100px 0; border-top:1px solid var(--line); }
+  .certs-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+  .cert-card{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    border:1px solid var(--line); border-radius:var(--radius);
+    background:var(--ink-2); padding:20px 22px;
+    text-decoration:none; color:inherit;
+    transition:border-color .25s ease, background .25s ease, transform .25s ease;
+  }
+  .cert-card:hover{ border-color:var(--amber); background:var(--ink-3); transform:translateY(-2px); }
+  .cert-card .cert-name{ color:var(--paper); font-weight:600; font-size:0.98rem; margin-bottom:4px; }
+  .cert-card .cert-issuer{ color:var(--paper-dim); font-family:var(--font-mono); font-size:0.78rem; }
+  .cert-arrow{ color:var(--cyan); font-size:1.2rem; flex-shrink:0; transition:transform .25s ease; }
+  .cert-card:hover .cert-arrow{ transform:translate(3px,-3px); }
+  @media (max-width:720px){ .certs-grid{ grid-template-columns:1fr; } }
+
+  /* ---------- Projects ---------- */
+  .projects{ padding:100px 0; border-top:1px solid var(--line); }
+  .project-card{
+    border:1px solid var(--line); border-radius:var(--radius);
+    background:var(--ink-2); overflow:hidden; margin-bottom:26px;
+  }
+  .carousel{ position:relative; background:var(--ink); }
+  .carousel .track{ position:relative; aspect-ratio:16/9; }
+  .carousel img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    opacity:0; transition:opacity .45s ease;
+  }
+  .carousel img.active{ opacity:1; }
+  .carousel .nav-btn{
+    position:absolute; top:50%; transform:translateY(-50%);
+    background:rgba(14,28,48,0.75); border:1px solid var(--line);
+    color:var(--paper); width:36px; height:36px; border-radius:50%;
+    cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center;
+    transition:background .2s ease, border-color .2s ease;
+  }
+  .carousel .nav-btn:hover{ background:var(--ink-3); border-color:var(--cyan-dim); }
+  .carousel .nav-btn.prev{ left:14px; } .carousel .nav-btn.next{ right:14px; }
+  .dots{ display:flex; gap:7px; justify-content:center; padding:12px 0; background:var(--ink-2); }
+  .dots button{
+    width:7px; height:7px; border-radius:50%; border:none; background:var(--line);
+    cursor:pointer; padding:0;
+  }
+  .dots button.active{ background:var(--amber); }
+
+  .project-body{ padding:22px 24px 24px; }
+  .project-body h3{ margin:0 0 8px; font-family:var(--font-display); font-size:1.2rem; color:var(--paper); }
+  .project-body p{ margin:0 0 16px; color:var(--paper-dim); font-size:0.95rem; }
+  .project-links{ display:flex; gap:12px; flex-wrap:wrap; }
+  .project-links a{
+    font-family:var(--font-mono); font-size:0.8rem; text-decoration:none;
+    border:1px solid var(--line); padding:7px 13px; border-radius:6px; color:var(--paper-dim);
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .project-links a:hover{ border-color:var(--cyan-dim); color:var(--cyan); }
+
+  /* ---------- Footer / Contact ---------- */
+  .contact{ padding:100px 0 40px; border-top:1px solid var(--line); }
+  .stamp{
+    border:1px solid var(--line); border-radius:var(--radius);
+    background:var(--ink-2); padding:44px 40px;
+    text-align:center; position:relative;
+  }
+  .stamp::before, .stamp::after{
+    content:""; position:absolute; width:18px; height:18px;
+    border:1px solid var(--cyan-dim); opacity:.5;
+  }
+  .stamp::before{ top:14px; left:14px; border-right:none; border-bottom:none; }
+  .stamp::after{ bottom:14px; right:14px; border-left:none; border-top:none; }
+  .stamp h2{ font-family:var(--font-display); font-size:clamp(1.5rem,3vw,2rem); margin:0 0 12px; color:var(--paper); }
+  .stamp p{ color:var(--paper-dim); margin:0 0 26px; }
+  .contact-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .contact-links{
+    display:flex; gap:24px; justify-content:center; flex-wrap:wrap; margin-top:30px;
+    font-family:var(--font-mono); font-size:0.85rem;
+  }
+  .contact-links a{ color:var(--paper-dim); text-decoration:none; }
+  .contact-links a:hover{ color:var(--cyan); }
+  .copy-note{ font-family:var(--font-mono); font-size:0.72rem; color:var(--cyan); height:16px; margin-top:8px; }
+
+  footer.foot{
+    text-align:center; padding:28px 0 40px; color:var(--paper-dim);
+    font-family:var(--font-mono); font-size:0.78rem;
+  }
+
+  @media (max-width:780px){
+    nav.links{
+      position:fixed; top:64px; left:0; right:0; background:var(--ink-2);
+      flex-direction:column; padding:20px 24px; gap:18px;
+      border-bottom:1px solid var(--line);
+      transform:translateY(-130%); opacity:0; transition:transform .3s ease, opacity .3s ease;
+    }
+    nav.links.open{ transform:translateY(0); opacity:1; }
+    .nav-cta .btn.ghost{ display:none; }
+    .menu-toggle{ display:flex; }
+  }
+</style>
 </head>
 <body>
-<header>
-  <h1>Gbolahan Babalobi</h1>
-  <p>Power BI Portfolio · ALX ExploreAI — Maji Ndogo Dashboards (Parts 1–4)</p>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">GBOLAHAN.<span>BABALOBI</span></a>
+    <nav class="links" id="navLinks">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#certifications">Certifications</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn ghost" href="assets/Gbolahan_Babalobi_Resume.pdf" download>Résumé</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
 </header>
-<main class="wrap">
-  <section class="grid">
 
-    <!-- Part 1 -->
-    <div class="card">
-      <div class="carousel" data-carousel>
-        <img src="assets/part1_view1.png" class="active" alt="Part 1 View 1">
-        <img src="assets/part1_view2.png" alt="Part 1 View 2">
-        <img src="assets/part1_view3.png" alt="Part 1 View 3">
-        <button class="prev">&#10094;</button>
-        <button class="next">&#10095;</button>
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div data-reveal>
+        <div class="hero-role-line" id="roleLine"></div>
+        <h1 class="hero-name">Gbolahan<br>Babalobi</h1>
+        <p class="hero-copy">
+          Civil engineer turned data professional, based in Lagos, Nigeria. I build decision-ready
+          dashboards and bring the same precision to training and annotating data for AI systems.
+        </p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn solid">View my work</a>
+          <a href="assets/Gbolahan_Babalobi_Resume.pdf" class="btn" download>Download résumé ↓</a>
+        </div>
       </div>
-      <div class="body">
-        <h2 class="title">Maji Ndogo – Part 1: Exploring Access</h2>
-        <p class="desc">Survey-led overview of rural vs. urban water access, gender roles, and reliance on taps and wells. (3 dashboard views)</p>
-        <div class="actions">
-          <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji-ndogo-part1">GitHub</a>
-          <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji_ndogo_part1.pbix">Download PBIX</a>
+
+      <div class="titleblock" data-reveal>
+        <div class="photo-wrap">
+          <div class="photo-ring">
+            <img src="assets/headshot.jpg" alt="Portrait of Gbolahan Babalobi" />
+          </div>
+        </div>
+        <div class="tb-rows">
+          <div class="tb-row"><span class="k">NAME</span><span class="v">G. BABALOBI</span></div>
+          <div class="tb-row"><span class="k">ROLE</span><span class="v">DATA / AI ANNOTATION</span></div>
+          <div class="tb-row"><span class="k">LOCATION</span><span class="v">LAGOS, NG</span></div>
+          <div class="tb-row"><span class="k">SHEET / REV</span><span class="v">PORTFOLIO — 02</span></div>
         </div>
       </div>
     </div>
-
-    <!-- Part 2 -->
-    <div class="card">
-      <div class="carousel" data-carousel>
-        <img src="assets/part2_view1.png" class="active" alt="Part 2 View 1">
-        <img src="assets/part2_view2.png" alt="Part 2 View 2">
-        <img src="assets/part2_view3.png" alt="Part 2 View 3">
-        <img src="assets/part2_view4.png" alt="Part 2 View 4">
-        <button class="prev">&#10094;</button>
-        <button class="next">&#10095;</button>
-      </div>
-      <div class="body">
-        <h2 class="title">Maji Ndogo – Part 2: Insights for Leaders</h2>
-        <p class="desc">Reports for leaders & governors: who lacks access, upgrade costs, and priority regions. (4 dashboard views)</p>
-        <div class="actions">
-          <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji-ndogo-part2">GitHub</a>
-          <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji_ndogo_part2.pbix">Download PBIX</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Part 3 -->
-    <div class="card">
-      <div class="carousel" data-carousel>
-        <img src="assets/part3_view1.png" class="active" alt="Part 3 View 1">
-        <img src="assets/part3_view2.png" alt="Part 3 View 2">
-        <img src="assets/part3_view3.png" alt="Part 3 View 3">
-        <img src="assets/part3_view4.png" alt="Part 3 View 4">
-        <img src="assets/part3_view5.png" alt="Part 3 View 5">
-        <img src="assets/part3_view6.png" alt="Part 3 View 6">
-        <button class="prev">&#10094;</button>
-        <button class="next">&#10095;</button>
-      </div>
-      <div class="body">
-        <h2 class="title">Maji Ndogo – Part 3: Progress & Budget</h2>
-        <p class="desc">KPIs for population water access, project completion, and budget allocations across provinces. (6 dashboard views)</p>
-        <div class="actions">
-          <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji-ndogo-part3">GitHub</a>
-          <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji_ndogo_part3.pbix">Download PBIX</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Part 4 -->
-    <div class="card">
-      <div class="carousel" data-carousel>
-        <img src="assets/part4_view1.png" class="active" alt="Part 4 View 1">
-        <img src="assets/part4_view2.png" alt="Part 4 View 2">
-        <img src="assets/part4_view3.png" alt="Part 4 View 3">
-        <button class="prev">&#10094;</button>
-        <button class="next">&#10095;</button>
-      </div>
-      <div class="body">
-        <h2 class="title">Maji Ndogo – Part 4: Accountability</h2>
-        <p class="desc">Finalized reporting with interactive toggles, provincial drill-throughs, and impact-driven metrics. (7 dashboard views)</p>
-        <div class="actions">
-          <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji-ndogo-part4">GitHub</a>
-          <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji_ndogo_part4.pbix">Download PBIX</a>
-        </div>
-      </div>
-    </div>
-
   </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="wrap about-grid">
+      <div data-reveal>
+        <div class="eyebrow">Sheet 01 — About</div>
+        <h2 class="section-title">From blueprints to dashboards</h2>
+        <p>
+          I trained as a civil engineer — <strong>B.Eng, Civil Engineering, Covenant University (2019–2025)</strong>
+          — and spent years thinking in tolerances, structures, and precision. Somewhere along the way, I found
+          myself pulled toward a different kind of building: building with data.
+        </p>
+        <p>
+          Over the past two years I've deliberately re-trained as a data professional — certifications in
+          <strong> SQL and Excel through DataCamp</strong>, a <strong>Data Science certification through ALX
+          Africa / Explore AI Academy</strong>, and Python and applied data science through
+          <strong> WorldQuant University's Applied Data Science Lab</strong>. I've since worked hands-on as a
+          <strong> video data annotator for Turing</strong>, helping prepare footage used to train AI models.
+        </p>
+        <p>
+          What ties it together isn't a sudden pivot — it's a consistent thread. I want to work with structure,
+          precision, and systems, whether that's a building or a dataset. Right now, that means two things I do
+          well: turning raw data into dashboards people can act on, and doing the careful, detail-heavy work of
+          annotating and training data for AI systems.
+        </p>
+      </div>
+      <div class="stat-list" data-reveal>
+        <div class="stat"><div class="num">20</div><div class="label">Power BI dashboards shipped across a 4-part water-access analysis</div></div>
+        <div class="stat"><div class="num">4</div><div class="label">Certifications completed — DataCamp ×2, ALX Africa, WorldQuant</div></div>
+        <div class="stat"><div class="num">1</div><div class="label">AI data-annotation contract delivered, with Turing</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="skills" id="skills">
+    <div class="wrap">
+      <div class="eyebrow" data-reveal>Sheet 02 — Skills</div>
+      <h2 class="section-title" data-reveal>What I work with</h2>
+      <div class="skills-grid">
+        <div class="skill-card" data-reveal>
+          <span class="code">01 — DATA ANALYSIS &amp; BI</span>
+          <h3>Turning data into decisions</h3>
+          <div class="chip-row">
+            <span class="chip">Power BI</span><span class="chip">DAX</span>
+            <span class="chip">Data Modeling</span><span class="chip">SQL</span>
+            <span class="chip">Excel</span><span class="chip">Power Query</span>
+          </div>
+        </div>
+        <div class="skill-card" data-reveal>
+          <span class="code">02 — AI TRAINING &amp; ANNOTATION</span>
+          <h3>Preparing data for AI models</h3>
+          <div class="chip-row">
+            <span class="chip">Video &amp; Data Annotation</span><span class="chip">Object Tracking</span>
+            <span class="chip">Event Timestamping</span><span class="chip">Annotation QA</span>
+          </div>
+        </div>
+        <div class="skill-card" data-reveal>
+          <span class="code">03 — PROGRAMMING &amp; TOOLS</span>
+          <h3>Working with data directly</h3>
+          <div class="chip-row">
+            <span class="chip">Python</span><span class="chip">Pandas</span>
+            <span class="chip">Git / GitHub</span>
+          </div>
+        </div>
+        <div class="skill-card" data-reveal>
+          <span class="code">04 — ENGINEERING FOUNDATION</span>
+          <h3>Where the precision comes from</h3>
+          <div class="chip-row">
+            <span class="chip">Structural Analysis</span><span class="chip">Technical Documentation</span>
+            <span class="chip">Project Precision</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="experience" id="experience">
+    <div class="wrap">
+      <div class="eyebrow" data-reveal>Sheet 03 — Experience</div>
+      <h2 class="section-title" data-reveal>Where I've put it to work</h2>
+      <div class="timeline">
+        <div class="tl-item" data-reveal>
+          <div class="tl-head">
+            <h3>Video Data Annotator</h3>
+            <span class="tl-meta">APR – MAY 2026</span>
+          </div>
+          <p class="tl-org">Turing · Remote</p>
+          <ul>
+            <li>Annotated first-person (POV) video footage for AI model training, focused on object tracking and precise event timestamping.</li>
+            <li>Maintained annotation consistency and accuracy across footage to support downstream model quality.</li>
+          </ul>
+        </div>
+        <div class="tl-item minor" data-reveal>
+          <div class="tl-head">
+            <h3>Civil Engineering Intern</h3>
+          </div>
+          <p class="tl-org">Laralek Ultimate Limited</p>
+        </div>
+        <div class="tl-item minor" data-reveal>
+          <div class="tl-head">
+            <h3>Civil Engineering Intern</h3>
+          </div>
+          <p class="tl-org">Konsadem Associates</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section class="certs" id="certifications">
+    <div class="wrap">
+      <div class="eyebrow" data-reveal>Sheet 04 — Certifications</div>
+      <h2 class="section-title" data-reveal>Verified credentials</h2>
+      <div class="certs-grid">
+        <a class="cert-card" data-reveal href="https://www.datacamp.com/certificate/SQA0019393039017" target="_blank" rel="noopener">
+          <div>
+            <div class="cert-name">SQL Associate</div>
+            <div class="cert-issuer">DataCamp</div>
+          </div>
+          <span class="cert-arrow">↗</span>
+        </a>
+        <a class="cert-card" data-reveal href="https://www.datacamp.com/certificate/DAA0018441001885" target="_blank" rel="noopener">
+          <div>
+            <div class="cert-name">Excel Associate</div>
+            <div class="cert-issuer">DataCamp</div>
+          </div>
+          <span class="cert-arrow">↗</span>
+        </a>
+        <a class="cert-card" data-reveal href="https://savanna.alxafrica.com/certificates/5JYysfhCTN" target="_blank" rel="noopener">
+          <div>
+            <div class="cert-name">Data Science Certification</div>
+            <div class="cert-issuer">ALX Africa / Explore AI Academy</div>
+          </div>
+          <span class="cert-arrow">↗</span>
+        </a>
+        <a class="cert-card" data-reveal href="https://www.credly.com/badges/c64c947a-163f-4924-b278-9944a58dd858/public_url" target="_blank" rel="noopener">
+          <div>
+            <div class="cert-name">Applied Data Science Lab</div>
+            <div class="cert-issuer">WorldQuant University</div>
+          </div>
+          <span class="cert-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="projects" id="projects">
+    <div class="wrap">
+      <div class="eyebrow" data-reveal>Sheet 05 — Projects</div>
+      <h2 class="section-title" data-reveal>Maji Ndogo — Power BI water-access analysis</h2>
+
+      <div class="project-card" data-reveal>
+        <div class="carousel" data-carousel>
+          <div class="track">
+            <img src="assets/part1_view1.png" class="active" alt="Part 1 View 1">
+            <img src="assets/part1_view2.png" alt="Part 1 View 2">
+            <img src="assets/part1_view3.png" alt="Part 1 View 3">
+          </div>
+          <button class="nav-btn prev" aria-label="Previous image">&#10094;</button>
+          <button class="nav-btn next" aria-label="Next image">&#10095;</button>
+          <div class="dots"></div>
+        </div>
+        <div class="project-body">
+          <h3>Part 1 — Exploring Access</h3>
+          <p>Survey-led overview of rural vs. urban water access, gender roles, and reliance on taps and wells.</p>
+          <div class="project-links">
+            <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji-ndogo-part1" target="_blank" rel="noopener">GitHub →</a>
+            <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji_ndogo_part1.pbix" target="_blank" rel="noopener">Download PBIX →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card" data-reveal>
+        <div class="carousel" data-carousel>
+          <div class="track">
+            <img src="assets/part2_view1.png" class="active" alt="Part 2 View 1">
+            <img src="assets/part2_view2.png" alt="Part 2 View 2">
+            <img src="assets/part2_view3.png" alt="Part 2 View 3">
+            <img src="assets/part2_view4.png" alt="Part 2 View 4">
+          </div>
+          <button class="nav-btn prev" aria-label="Previous image">&#10094;</button>
+          <button class="nav-btn next" aria-label="Next image">&#10095;</button>
+          <div class="dots"></div>
+        </div>
+        <div class="project-body">
+          <h3>Part 2 — Insights for Leaders</h3>
+          <p>Reports for leaders and governors: who lacks access, upgrade costs, and priority regions.</p>
+          <div class="project-links">
+            <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji-ndogo-part2" target="_blank" rel="noopener">GitHub →</a>
+            <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji_ndogo_part2.pbix" target="_blank" rel="noopener">Download PBIX →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card" data-reveal>
+        <div class="carousel" data-carousel>
+          <div class="track">
+            <img src="assets/part3_view1.png" class="active" alt="Part 3 View 1">
+            <img src="assets/part3_view2.png" alt="Part 3 View 2">
+            <img src="assets/part3_view3.png" alt="Part 3 View 3">
+            <img src="assets/part3_view4.png" alt="Part 3 View 4">
+            <img src="assets/part3_view5.png" alt="Part 3 View 5">
+            <img src="assets/part3_view6.png" alt="Part 3 View 6">
+          </div>
+          <button class="nav-btn prev" aria-label="Previous image">&#10094;</button>
+          <button class="nav-btn next" aria-label="Next image">&#10095;</button>
+          <div class="dots"></div>
+        </div>
+        <div class="project-body">
+          <h3>Part 3 — Progress &amp; Budget</h3>
+          <p>KPIs for population water access, project completion, and budget allocations across provinces.</p>
+          <div class="project-links">
+            <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji-ndogo-part3" target="_blank" rel="noopener">GitHub →</a>
+            <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji_ndogo_part3.pbix" target="_blank" rel="noopener">Download PBIX →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card" data-reveal>
+        <div class="carousel" data-carousel>
+          <div class="track">
+            <img src="assets/part4_view1.png" class="active" alt="Part 4 View 1">
+            <img src="assets/part4_view2.png" alt="Part 4 View 2">
+            <img src="assets/part4_view3.png" alt="Part 4 View 3">
+          </div>
+          <button class="nav-btn prev" aria-label="Previous image">&#10094;</button>
+          <button class="nav-btn next" aria-label="Next image">&#10095;</button>
+          <div class="dots"></div>
+        </div>
+        <div class="project-body">
+          <h3>Part 4 — Accountability</h3>
+          <p>Finalized reporting with interactive toggles, provincial drill-throughs, and impact-driven metrics.</p>
+          <div class="project-links">
+            <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji-ndogo-part4" target="_blank" rel="noopener">GitHub →</a>
+            <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji_ndogo_part4.pbix" target="_blank" rel="noopener">Download PBIX →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <div class="eyebrow" data-reveal>Sheet 06 — Contact</div>
+      <div class="stamp" data-reveal>
+        <h2>Let's build something with data</h2>
+        <p>Open to data analysis, AI training, and data annotation roles — remote or Lagos-based.</p>
+        <div class="contact-row">
+          <button class="btn solid" id="copyEmailBtn">Copy email</button>
+          <a class="btn" href="assets/Gbolahan_Babalobi_Resume.pdf" download>Download résumé ↓</a>
+        </div>
+        <div class="copy-note" id="copyNote"></div>
+        <div class="contact-links">
+          <a href="mailto:babalobip@gmail.com">babalobip@gmail.com</a>
+          <a href="tel:+2349071332054">+234 907 133 2054</a>
+          <a href="https://www.linkedin.com/in/babalobi-gbolahan" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/Gbolahan-Babalobi" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
-<footer>
-  © <span id="y"></span> Gbolahan Babalobi · <a href="https://github.com/gbolahanbabalobi" target="_blank">GitHub</a>
+
+<footer class="foot">
+  © <span id="year"></span> Gbolahan Babalobi · Lagos, Nigeria
 </footer>
+
 <script>
-  document.getElementById('y').textContent = new Date().getFullYear();
-  // carousel logic
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Mobile menu
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuToggle.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in-view'));
+  }
+
+  // Scroll-spy active nav link
+  const sections = document.querySelectorAll('main section[id]');
+  const navAnchors = document.querySelectorAll('nav.links a');
+  if ('IntersectionObserver' in window) {
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const link = document.querySelector('nav.links a[href="#' + entry.target.id + '"]');
+        if (!link) return;
+        if (entry.isIntersecting) {
+          navAnchors.forEach(a => a.classList.remove('active'));
+          link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-40% 0px -50% 0px' });
+    sections.forEach(s => spy.observe(s));
+  }
+
+  // Hero role typewriter
+  const roles = [
+    'Data Analyst',
+    'AI Training Specialist',
+    'Data Annotation Specialist',
+    'Power BI Developer'
+  ];
+  const roleLine = document.getElementById('roleLine');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (reduceMotion) {
+    roleLine.textContent = roles[0];
+  } else {
+    let ri = 0, ci = 0, deleting = false;
+    function tick() {
+      const word = roles[ri];
+      if (!deleting) {
+        ci++;
+        roleLine.innerHTML = word.slice(0, ci) + '<span class="cursor">&nbsp;</span>';
+        if (ci === word.length) { deleting = true; setTimeout(tick, 1400); return; }
+      } else {
+        ci--;
+        roleLine.innerHTML = word.slice(0, ci) + '<span class="cursor">&nbsp;</span>';
+        if (ci === 0) { deleting = false; ri = (ri + 1) % roles.length; }
+      }
+      setTimeout(tick, deleting ? 35 : 65);
+    }
+    tick();
+  }
+
+  // Carousels
   document.querySelectorAll('[data-carousel]').forEach(carousel => {
-    const imgs = carousel.querySelectorAll('img');
+    const imgs = carousel.querySelectorAll('.track img');
+    const dotsWrap = carousel.querySelector('.dots');
     let idx = 0;
-    function show(i){ imgs.forEach((im,j)=>im.classList.toggle('active', j===i)); }
-    carousel.querySelector('.prev').onclick=()=>{ idx=(idx-1+imgs.length)%imgs.length; show(idx); };
-    carousel.querySelector('.next').onclick=()=>{ idx=(idx+1)%imgs.length; show(idx); };
+
+    imgs.forEach((_, i) => {
+      const dot = document.createElement('button');
+      if (i === 0) dot.classList.add('active');
+      dot.setAttribute('aria-label', 'Go to image ' + (i + 1));
+      dot.addEventListener('click', () => go(i));
+      dotsWrap.appendChild(dot);
+    });
+    const dots = dotsWrap.querySelectorAll('button');
+
+    function go(i) {
+      idx = (i + imgs.length) % imgs.length;
+      imgs.forEach((im, j) => im.classList.toggle('active', j === idx));
+      dots.forEach((d, j) => d.classList.toggle('active', j === idx));
+    }
+    carousel.querySelector('.prev').addEventListener('click', () => go(idx - 1));
+    carousel.querySelector('.next').addEventListener('click', () => go(idx + 1));
+  });
+
+  // Copy email
+  const copyBtn = document.getElementById('copyEmailBtn');
+  const copyNote = document.getElementById('copyNote');
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText('babalobip@gmail.com');
+      copyNote.textContent = 'Copied — babalobip@gmail.com';
+    } catch (e) {
+      copyNote.textContent = 'babalobip@gmail.com';
+    }
+    setTimeout(() => { copyNote.textContent = ''; }, 2500);
   });
 </script>
+
 </body>
 </html>
