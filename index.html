@@ -388,6 +388,57 @@
     .nav-cta .btn.ghost{ display:none; }
     .menu-toggle{ display:flex; }
   }
+
+  /* ---------- Python & SQL case studies ---------- */
+  .proj-jump{ display:flex; gap:10px; flex-wrap:wrap; margin:0 0 44px; }
+  .chip-link{
+    font-family:var(--font-mono); font-size:0.8rem; text-decoration:none;
+    border:1px solid var(--line); border-radius:6px; padding:8px 14px; color:var(--paper-dim);
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .chip-link:hover{ border-color:var(--cyan-dim); color:var(--cyan); }
+  .chip-link b{ color:var(--amber); font-weight:600; margin-left:8px; }
+  .proj-group{ scroll-margin-top:84px; }
+  .proj-group + .proj-group{ margin-top:72px; padding-top:56px; border-top:1px solid var(--line); }
+  .group-title{
+    font-family:var(--font-display); font-weight:600; font-size:1.35rem;
+    margin:0 0 22px; color:var(--paper); letter-spacing:-0.005em;
+  }
+  .group-note{ color:var(--paper-dim); margin:-8px 0 8px; max-width:64ch; font-size:0.95rem; }
+  .sub-title{ font-family:var(--font-mono); font-weight:500; font-size:0.82rem; color:var(--cyan); margin:30px 0 14px; }
+  .sub-title span{ color:var(--paper-dim); margin-left:8px; }
+
+  .cs-row{
+    display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,0.95fr); gap:28px; align-items:center;
+    border:1px solid var(--line); border-radius:var(--radius); background:var(--ink-2);
+    padding:22px 24px; margin-bottom:16px; text-decoration:none; color:inherit;
+    transition:border-color .25s ease, background .25s ease, transform .25s ease, opacity .7s ease;
+  }
+  .cs-row:hover{ border-color:var(--amber); background:var(--ink-3); transform:translateY(-2px); }
+  .cs-row h4{ margin:0 0 10px; font-family:var(--font-display); font-size:1.15rem; font-weight:600; color:var(--paper); }
+  .cs-row .chip-row{ margin-bottom:12px; }
+  .cs-row p{ margin:0 0 14px; color:var(--paper-dim); font-size:0.93rem; }
+  .cs-cta{ font-family:var(--font-mono); font-size:0.8rem; color:var(--cyan); display:inline-flex; gap:8px; align-items:center; }
+  .cs-go{ display:inline-block; transition:transform .25s ease; }
+  .cs-row:hover .cs-go{ transform:translate(3px,-3px); }
+
+  .cs-preview{
+    background:var(--ink); border:1px solid var(--line-soft); border-radius:8px;
+    padding:12px 14px 10px; min-width:0; overflow:hidden;
+    font-family:var(--font-mono); font-size:0.74rem; line-height:1.5;
+  }
+  .pv-cap{ color:var(--paper-dim); margin-bottom:8px; }
+  .pv-row{ display:grid; grid-template-columns:var(--cols); gap:14px; padding:3px 0; border-top:1px solid var(--line-soft); color:var(--paper); }
+  .pv-row.pv-head{ color:var(--cyan); border-top:none; border-bottom:1px solid var(--line); padding-bottom:5px; margin-bottom:2px; }
+  .pv-row span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .pv-row .r{ text-align:right; }
+  .cs-preview svg{ display:block; width:100%; height:54px; }
+  .cs-preview svg rect{ fill:var(--cyan-dim); }
+  .cs-preview svg rect.pk{ fill:var(--amber); }
+
+  @media (max-width:860px){
+    .cs-row{ grid-template-columns:1fr; gap:18px; }
+  }
 </style>
 </head>
 <body>
@@ -475,6 +526,7 @@
         <div class="stat"><div class="num">20</div><div class="label">Power BI dashboards shipped across a 4-part water-access analysis</div></div>
         <div class="stat"><div class="num">4</div><div class="label">Certifications completed — DataCamp ×2, ALX Africa, WorldQuant</div></div>
         <div class="stat"><div class="num">1</div><div class="label">AI data-annotation contract delivered, with Turing</div></div>
+        <div class="stat"><div class="num">7</div><div class="label">Python &amp; SQL case studies, each with full code and output</div></div>
       </div>
     </div>
   </section>
@@ -492,6 +544,7 @@
             <span class="chip">Power BI</span><span class="chip">DAX</span>
             <span class="chip">Data Modeling</span><span class="chip">SQL</span>
             <span class="chip">Excel</span><span class="chip">Power Query</span>
+            <span class="chip">PostgreSQL</span><span class="chip">Data Cleaning</span>
           </div>
         </div>
         <div class="skill-card" data-reveal>
@@ -507,7 +560,7 @@
           <h3>Working with data directly</h3>
           <div class="chip-row">
             <span class="chip">Python</span><span class="chip">Pandas</span>
-            <span class="chip">Git / GitHub</span>
+            <span class="chip">Matplotlib</span><span class="chip">Git / GitHub</span>
           </div>
         </div>
         <div class="skill-card" data-reveal>
@@ -597,7 +650,14 @@
   <section class="projects" id="projects">
     <div class="wrap">
       <div class="eyebrow" data-reveal>Sheet 05 — Projects</div>
-      <h2 class="section-title" data-reveal>Maji Ndogo — Power BI water-access analysis</h2>
+      <h2 class="section-title" data-reveal>What I’ve built and analyzed</h2>
+      <div class="proj-jump" data-reveal>
+        <a class="chip-link" href="#powerbi">Power BI dashboards<b>4</b></a>
+        <a class="chip-link" href="#python-sql">Python &amp; SQL case studies<b>7</b></a>
+      </div>
+
+      <div class="proj-group" id="powerbi">
+      <h3 class="group-title" data-reveal>Power BI: Maji Ndogo water-access analysis</h3>
 
       <div class="project-card" data-reveal>
         <div class="carousel" data-carousel>
@@ -685,6 +745,81 @@
             <a href="https://github.com/Gbolahan-Babalobi/Projects/tree/main/powerbi/maji_ndogo_part4.pbix" target="_blank" rel="noopener">Download PBIX →</a>
           </div>
         </div>
+      </div>
+      </div>
+
+      <div class="proj-group" id="python-sql">
+      <h3 class="group-title" data-reveal>Python &amp; SQL: case studies</h3>
+      <p class="group-note" data-reveal>Worked in DataCamp Workspace. Each page lays out the question, the findings, and the full code with its output.</p>
+      <h4 class="sub-title" data-reveal>DataCamp projects<span>4</span></h4>
+      <div class="cs-list">
+        <a class="cs-row" href="projects/nyc-school-sat.html" data-reveal>
+          <div>
+            <h4>NYC public school SAT performance</h4>
+            <div class="chip-row"><span class="chip">Python</span><span class="chip">pandas</span></div>
+            <p>Ranked 375 NYC public high schools on SAT results: the best math scores, the top 10 overall, and the borough with the widest spread.</p>
+            <span class="cs-cta">Read the case study <span class="cs-go">↗</span></span>
+          </div>
+          <div class="cs-preview" aria-hidden="true" style="--cols:minmax(0,1fr) auto"><div class="pv-cap">top_10_schools, first 3 of 10 rows</div><div class="pv-row pv-head"><span class="l">school_name</span><span class="r">total_SAT</span></div><div class="pv-row"><span class="l">Stuyvesant High School</span><span class="r">2144</span></div><div class="pv-row"><span class="l">Bronx High School of Science</span><span class="r">2041</span></div><div class="pv-row"><span class="l">Staten Island Technical High School</span><span class="r">2041</span></div></div>
+        </a>
+        <a class="cs-row" href="projects/netflix-1990s-movies.html" data-reveal>
+          <div>
+            <h4>Netflix movies of the 1990s</h4>
+            <div class="chip-row"><span class="chip">Python</span><span class="chip">pandas</span><span class="chip">matplotlib</span></div>
+            <p>Exploratory analysis of 4,812 Netflix titles to profile 1990s movies: the typical runtime and how many short action films there were.</p>
+            <span class="cs-cta">Read the case study <span class="cs-go">↗</span></span>
+          </div>
+          <div class="cs-preview" aria-hidden="true"><div class="pv-cap">runtimes of 183 movies from the 1990s</div><svg viewBox="0 0 196 54" role="img" aria-label="Histogram of 1990s movie runtimes, peaking between about 95 and 111 minutes" preserveAspectRatio="none"><rect class="" x="0" y="49.1" width="16" height="2.9" rx="2"/><rect class="" x="20" y="48.1" width="16" height="3.9" rx="2"/><rect class="" x="40" y="43.2" width="16" height="8.8" rx="2"/><rect class="" x="60" y="18.700000000000003" width="16" height="33.3" rx="2"/><rect class="pk" x="80" y="6.0" width="16" height="46.0" rx="2"/><rect class="" x="100" y="19.700000000000003" width="16" height="32.3" rx="2"/><rect class="" x="120" y="36.3" width="16" height="15.7" rx="2"/><rect class="" x="140" y="38.3" width="16" height="13.7" rx="2"/><rect class="" x="160" y="35.4" width="16" height="16.6" rx="2"/><rect class="" x="180" y="46.1" width="16" height="5.9" rx="2"/></svg></div>
+        </a>
+        <a class="cs-row" href="projects/student-mental-health.html" data-reveal>
+          <div>
+            <h4>International students and mental health</h4>
+            <div class="chip-row"><span class="chip">SQL</span><span class="chip">PostgreSQL</span></div>
+            <p>SQL analysis of a 286-student survey: how depression, social connectedness and acculturative stress change with length of stay.</p>
+            <span class="cs-cta">Read the case study <span class="cs-go">↗</span></span>
+          </div>
+          <div class="cs-preview" aria-hidden="true" style="--cols:auto auto auto"><div class="pv-cap">international students by years of stay</div><div class="pv-row pv-head"><span class="r">stay</span><span class="r">count_int</span><span class="r">average_phq</span></div><div class="pv-row"><span class="r">1</span><span class="r">95</span><span class="r">7.48</span></div><div class="pv-row"><span class="r">2</span><span class="r">39</span><span class="r">8.28</span></div><div class="pv-row"><span class="r">3</span><span class="r">46</span><span class="r">9.09</span></div><div class="pv-row"><span class="r">4</span><span class="r">14</span><span class="r">8.57</span></div></div>
+        </a>
+        <a class="cs-row" href="projects/motorcycle-parts-revenue.html" data-reveal>
+          <div>
+            <h4>Motorcycle parts: wholesale net revenue</h4>
+            <div class="chip-row"><span class="chip">SQL</span><span class="chip">PostgreSQL</span></div>
+            <p>Wholesale net revenue by product line, month and warehouse for a motorcycle-parts seller, built in one SQL query.</p>
+            <span class="cs-cta">Read the case study <span class="cs-go">↗</span></span>
+          </div>
+          <div class="cs-preview" aria-hidden="true" style="--cols:minmax(0,1.3fr) minmax(0,0.9fr) minmax(0,0.9fr) auto"><div class="pv-cap">top 3 of 48 rows by net revenue</div><div class="pv-row pv-head"><span class="l">product_line</span><span class="l">month</span><span class="l">warehouse</span><span class="r">net_revenue</span></div><div class="pv-row"><span class="l">Engine</span><span class="l">August</span><span class="l">Central</span><span class="r">9528.71</span></div><div class="pv-row"><span class="l">Frame &amp; body</span><span class="l">August</span><span class="l">Central</span><span class="r">8657.99</span></div><div class="pv-row"><span class="l">Suspension &amp; traction</span><span class="l">June</span><span class="l">North</span><span class="r">8065.74</span></div></div>
+        </a>
+      </div>
+      <h4 class="sub-title" data-reveal>DataCamp practical exams<span>3</span></h4>
+      <div class="cs-list">
+        <a class="cs-row" href="projects/grocery-store-sales.html" data-reveal>
+          <div>
+            <h4>Grocery store product data</h4>
+            <div class="chip-row"><span class="chip">SQL</span><span class="chip">PostgreSQL</span></div>
+            <p>Cleaned a 1,700-row product table to a data description in SQL, then summarized prices by product type.</p>
+            <span class="cs-cta">Read the case study <span class="cs-go">↗</span></span>
+          </div>
+          <div class="cs-preview" aria-hidden="true" style="--cols:minmax(0,1fr) auto auto"><div class="pv-cap">first 3 of 5 rows</div><div class="pv-row pv-head"><span class="l">product_type</span><span class="r">min_price</span><span class="r">max_price</span></div><div class="pv-row"><span class="l">Bakery</span><span class="r">6.26</span><span class="r">11.88</span></div><div class="pv-row"><span class="l">Dairy</span><span class="r">8.33</span><span class="r">13.97</span></div><div class="pv-row"><span class="l">Meat</span><span class="r">11.48</span><span class="r">16.98</span></div></div>
+        </a>
+        <a class="cs-row" href="projects/hotel-operations.html" data-reveal>
+          <div>
+            <h4>Hotel operations: room-service delays</h4>
+            <div class="chip-row"><span class="chip">SQL</span><span class="chip">PostgreSQL</span></div>
+            <p>Cleaned a hotel-branch table, then used joins and aggregates to find where room-service ratings fall below target.</p>
+            <span class="cs-cta">Read the case study <span class="cs-go">↗</span></span>
+          </div>
+          <div class="cs-preview" aria-hidden="true" style="--cols:auto auto auto"><div class="pv-cap">first 3 of 215 rows below target</div><div class="pv-row pv-head"><span class="r">service_id</span><span class="r">branch_id</span><span class="r">avg_rating</span></div><div class="pv-row"><span class="r">2</span><span class="r">46</span><span class="r">3.78</span></div><div class="pv-row"><span class="r">4</span><span class="r">99</span><span class="r">3.83</span></div><div class="pv-row"><span class="r">1</span><span class="r">8</span><span class="r">3.64</span></div></div>
+        </a>
+        <a class="cs-row" href="projects/customer-support-tickets.html" data-reveal>
+          <div>
+            <h4>Customer support ticket analysis</h4>
+            <div class="chip-row"><span class="chip">SQL</span><span class="chip">PostgreSQL</span></div>
+            <p>Cleaned a support-ticket table, compared response times across ticket categories, and joined survey ratings to the slowest ones.</p>
+            <span class="cs-cta">Read the case study <span class="cs-go">↗</span></span>
+          </div>
+          <div class="cs-preview" aria-hidden="true" style="--cols:minmax(0,1fr) auto auto"><div class="pv-cap">3 of 5 categories, slowest first</div><div class="pv-row pv-head"><span class="l">category</span><span class="r">min_response</span><span class="r">max_response</span></div><div class="pv-row"><span class="l">Installation Problem</span><span class="r">5</span><span class="r">17</span></div><div class="pv-row"><span class="l">Bug</span><span class="r">1</span><span class="r">13</span></div><div class="pv-row"><span class="l">Billing enquiry</span><span class="r">2</span><span class="r">8</span></div></div>
+        </a>
+      </div>
       </div>
     </div>
   </section>
