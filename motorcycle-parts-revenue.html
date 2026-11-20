@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Motorcycle parts: wholesale net revenue — Gbolahan Babalobi</title>
+<meta name="description" content="Wholesale net revenue by product line, month and warehouse for a motorcycle-parts seller, built in one SQL query." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/case-study.css" />
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="../index.html#top" class="brand">GBOLAHAN.<span>BABALOBI</span></a>
+    <nav class="links" id="navLinks">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#certifications">Certifications</a>
+      <a class="active" href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn ghost" href="../assets/Gbolahan_Babalobi_Resume.pdf" download>Résumé</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="cs-hero">
+    <div class="wrap">
+      <a class="cs-back" href="../index.html#python-sql">All projects</a>
+      <div class="cs-hero-grid">
+        <div>
+          <div class="eyebrow">Sheet 05 — Case study</div>
+          <h1 class="cs-h1">Motorcycle parts: wholesale net revenue</h1>
+          <p class="cs-lead">A motorcycle-parts seller runs three warehouses and accepts card, cash and bank transfer, each with its own fee. Its board wanted wholesale revenue by product line, and how it varies by month and warehouse. I wrote one query that returns net revenue after payment fees.</p>
+        </div>
+        <div class="titleblock">
+<div class="tb-row"><span class="k">Tools</span><span class="v">SQL, PostgreSQL</span></div>
+<div class="tb-row"><span class="k">Data</span><span class="v">sales table, orders from June to August 2021</span></div>
+<div class="tb-row"><span class="k">Source</span><span class="v">DataCamp project</span></div>
+<div class="tb-row"><span class="k">Skills</span><span class="v">Conditional logic, aggregation, multi-level grouping</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">What I found</h2>
+      <div class="cs-findings">
+<div class="finding"><div class="num">$159,640</div><p>total wholesale net revenue from June to August 2021.</p></div>
+<div class="finding"><div class="num">Frame &amp; body</div><p>is the largest product line at $39,478, just ahead of Suspension &amp; traction at $38,295. Miscellaneous is the smallest at $15,748.</p></div>
+<div class="finding"><div class="num">49%</div><p>of net revenue came through the Central warehouse ($78,856), against 36% for North and 14% for West.</p></div>
+<div class="finding"><div class="num">August</div><p>is the strongest month at $61,456, roughly $12,000 above June or July.</p></div>
+      </div>
+      <p class="cs-caveat">Totals above are sums of the 48 rows the query returns.</p>
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">How I approached it</h2>
+      <ul class="cs-approach">
+<li>Kept only Wholesale orders.</li>
+<li>Turned the order date into month names (June, July, August) with CASE and EXTRACT.</li>
+<li>Calculated net revenue as the sum of total minus the sum of payment_fee, grouped by product line, month and warehouse, and sorted the results.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cs-section" id="work">
+    <div class="wrap">
+      <h2 class="section-title">The code and output</h2>
+      <p class="cs-note">Taken from my DataCamp Workspace notebook for this project.</p>
+<div class="nb-cell">
+<div class="nb-label">Net revenue by product line, month and warehouse</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">SELECT</span>
+<span class="tok-w">	</span><span class="tok-n">product_line</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">CASE</span><span class="tok-w"> </span><span class="tok-k">WHEN</span><span class="tok-w"> </span><span class="tok-k">EXTRACT</span><span class="tok-p">(</span><span class="tok-s1">'month'</span><span class="tok-w"> </span><span class="tok-k">from</span><span class="tok-w"> </span><span class="tok-nb">date</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">6</span><span class="tok-w"> </span><span class="tok-k">THEN</span><span class="tok-w"> </span><span class="tok-s1">'June'</span>
+<span class="tok-w">        </span><span class="tok-k">WHEN</span><span class="tok-w"> </span><span class="tok-k">EXTRACT</span><span class="tok-p">(</span><span class="tok-s1">'month'</span><span class="tok-w"> </span><span class="tok-k">from</span><span class="tok-w"> </span><span class="tok-nb">date</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">7</span><span class="tok-w"> </span><span class="tok-k">THEN</span><span class="tok-w"> </span><span class="tok-s1">'July'</span>
+<span class="tok-w">        </span><span class="tok-k">WHEN</span><span class="tok-w"> </span><span class="tok-k">EXTRACT</span><span class="tok-p">(</span><span class="tok-s1">'month'</span><span class="tok-w"> </span><span class="tok-k">from</span><span class="tok-w"> </span><span class="tok-nb">date</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">8</span><span class="tok-w"> </span><span class="tok-k">THEN</span><span class="tok-w"> </span><span class="tok-s1">'August'</span>
+<span class="tok-w">    </span><span class="tok-k">END</span><span class="tok-w"> </span><span class="tok-k">as</span><span class="tok-w"> </span><span class="tok-k">month</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">warehouse</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">SUM</span><span class="tok-p">(</span><span class="tok-n">total</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">-</span><span class="tok-w"> </span><span class="tok-n">SUM</span><span class="tok-p">(</span><span class="tok-n">payment_fee</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">net_revenue</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">sales</span>
+<span class="tok-k">WHERE</span><span class="tok-w"> </span><span class="tok-n">client_type</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s1">'Wholesale'</span>
+<span class="tok-k">GROUP</span><span class="tok-w"> </span><span class="tok-k">BY</span><span class="tok-w"> </span><span class="tok-n">product_line</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-k">month</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">warehouse</span>
+<span class="tok-k">ORDER</span><span class="tok-w"> </span><span class="tok-k">BY</span><span class="tok-w"> </span><span class="tok-n">product_line</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-k">month</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">net_revenue</span><span class="tok-w"> </span><span class="tok-k">DESC</span><span class="tok-p">;</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>product_line</th>
+      <th>month</th>
+      <th>warehouse</th>
+      <th>net_revenue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Braking system</td>
+      <td>August</td>
+      <td>Central</td>
+      <td>3039.41</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Braking system</td>
+      <td>August</td>
+      <td>West</td>
+      <td>2500.67</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Braking system</td>
+      <td>August</td>
+      <td>North</td>
+      <td>1770.84</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Braking system</td>
+      <td>July</td>
+      <td>Central</td>
+      <td>3778.65</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Braking system</td>
+      <td>July</td>
+      <td>West</td>
+      <td>3060.93</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Braking system</td>
+      <td>July</td>
+      <td>North</td>
+      <td>2594.44</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Braking system</td>
+      <td>June</td>
+      <td>Central</td>
+      <td>3684.89</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Braking system</td>
+      <td>June</td>
+      <td>North</td>
+      <td>1487.77</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Braking system</td>
+      <td>June</td>
+      <td>West</td>
+      <td>1212.75</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Electrical system</td>
+      <td>August</td>
+      <td>North</td>
+      <td>4721.12</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Electrical system</td>
+      <td>August</td>
+      <td>Central</td>
+      <td>3126.43</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Electrical system</td>
+      <td>August</td>
+      <td>West</td>
+      <td>1241.84</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Electrical system</td>
+      <td>July</td>
+      <td>Central</td>
+      <td>5577.62</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Electrical system</td>
+      <td>July</td>
+      <td>North</td>
+      <td>1710.13</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Electrical system</td>
+      <td>July</td>
+      <td>West</td>
+      <td>449.46</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Electrical system</td>
+      <td>June</td>
+      <td>Central</td>
+      <td>2904.93</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Electrical system</td>
+      <td>June</td>
+      <td>North</td>
+      <td>2022.50</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Engine</td>
+      <td>August</td>
+      <td>Central</td>
+      <td>9528.71</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Engine</td>
+      <td>August</td>
+      <td>North</td>
+      <td>2324.19</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>Engine</td>
+      <td>July</td>
+      <td>Central</td>
+      <td>1827.03</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>Engine</td>
+      <td>July</td>
+      <td>North</td>
+      <td>1007.14</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>Engine</td>
+      <td>June</td>
+      <td>Central</td>
+      <td>6548.85</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>Frame &amp; body</td>
+      <td>August</td>
+      <td>Central</td>
+      <td>8657.99</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>Frame &amp; body</td>
+      <td>August</td>
+      <td>North</td>
+      <td>7898.89</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>Frame &amp; body</td>
+      <td>August</td>
+      <td>West</td>
+      <td>829.69</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>Frame &amp; body</td>
+      <td>July</td>
+      <td>North</td>
+      <td>6154.61</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>Frame &amp; body</td>
+      <td>July</td>
+      <td>Central</td>
+      <td>3135.13</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Frame &amp; body</td>
+      <td>June</td>
+      <td>Central</td>
+      <td>5111.34</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Frame &amp; body</td>
+      <td>June</td>
+      <td>North</td>
+      <td>4910.12</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Frame &amp; body</td>
+      <td>June</td>
+      <td>West</td>
+      <td>2779.74</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>Miscellaneous</td>
+      <td>August</td>
+      <td>North</td>
+      <td>1841.40</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>Miscellaneous</td>
+      <td>August</td>
+      <td>Central</td>
+      <td>1739.76</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>Miscellaneous</td>
+      <td>August</td>
+      <td>West</td>
+      <td>813.43</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>Miscellaneous</td>
+      <td>July</td>
+      <td>Central</td>
+      <td>3118.44</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>Miscellaneous</td>
+      <td>July</td>
+      <td>North</td>
+      <td>2404.65</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>Miscellaneous</td>
+      <td>July</td>
+      <td>West</td>
+      <td>1156.80</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>Miscellaneous</td>
+      <td>June</td>
+      <td>West</td>
+      <td>2280.97</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>Miscellaneous</td>
+      <td>June</td>
+      <td>Central</td>
+      <td>1878.07</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>Miscellaneous</td>
+      <td>June</td>
+      <td>North</td>
+      <td>513.99</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>Suspension &amp; traction</td>
+      <td>August</td>
+      <td>Central</td>
+      <td>5416.70</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>Suspension &amp; traction</td>
+      <td>August</td>
+      <td>North</td>
+      <td>4923.69</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>Suspension &amp; traction</td>
+      <td>August</td>
+      <td>West</td>
+      <td>1080.79</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>Suspension &amp; traction</td>
+      <td>July</td>
+      <td>Central</td>
+      <td>6456.72</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>Suspension &amp; traction</td>
+      <td>July</td>
+      <td>North</td>
+      <td>3714.28</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>Suspension &amp; traction</td>
+      <td>July</td>
+      <td>West</td>
+      <td>2939.32</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>Suspension &amp; traction</td>
+      <td>June</td>
+      <td>North</td>
+      <td>8065.74</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>Suspension &amp; traction</td>
+      <td>June</td>
+      <td>Central</td>
+      <td>3325.00</td>
+    </tr>
+    <tr>
+      <th>47</th>
+      <td>Suspension &amp; traction</td>
+      <td>June</td>
+      <td>West</td>
+      <td>2372.52</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><div class="nb-cap">48 rows × 4 columns</div>
+</div>
+</div>
+    </div>
+  </section>
+
+  <nav class="cs-pager" aria-label="More projects">
+    <div class="wrap">
+      <a class="pg prev" href="student-mental-health.html"><small>Previous project</small><strong>International students and mental health</strong></a>
+      <a class="btn ghost" href="../index.html#python-sql">All projects</a>
+      <a class="pg next" href="grocery-store-sales.html"><small>Next project</small><strong>Grocery store product data</strong></a>
+    </div>
+  </nav>
+
+</main>
+
+<footer class="foot">
+  © <span id="year"></span> Gbolahan Babalobi · Lagos, Nigeria
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuToggle.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+
+</body>
+</html>

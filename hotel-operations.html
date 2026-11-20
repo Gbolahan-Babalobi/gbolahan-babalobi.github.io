@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hotel operations: room-service delays — Gbolahan Babalobi</title>
+<meta name="description" content="Cleaned a hotel-branch table, then used joins and aggregates to find where room-service ratings fall below target." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/case-study.css" />
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="../index.html#top" class="brand">GBOLAHAN.<span>BABALOBI</span></a>
+    <nav class="links" id="navLinks">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#certifications">Certifications</a>
+      <a class="active" href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn ghost" href="../assets/Gbolahan_Babalobi_Resume.pdf" download>Résumé</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="cs-hero">
+    <div class="wrap">
+      <a class="cs-back" href="../index.html#python-sql">All projects</a>
+      <div class="cs-hero-grid">
+        <div>
+          <div class="eyebrow">Sheet 05 — Case study</div>
+          <h1 class="cs-h1">Hotel operations: room-service delays</h1>
+          <p class="cs-lead">LuxurStay Hotels is getting complaints about slow room service, and satisfaction has fallen below its 4.5 target. Working to the Head of Operations’ brief, I cleaned the branch data, measured response times by service and branch, pulled Meal and Laundry requests in EMEA and LATAM, and found where ratings fall short.</p>
+        </div>
+        <div class="titleblock">
+<div class="tb-row"><span class="k">Tools</span><span class="v">SQL, PostgreSQL</span></div>
+<div class="tb-row"><span class="k">Data</span><span class="v">branch, service and request tables</span></div>
+<div class="tb-row"><span class="k">Source</span><span class="v">DataCamp practical exam</span></div>
+<div class="tb-row"><span class="k">Skills</span><span class="v">Data cleaning, aggregation, CTEs, joins, HAVING</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">What I found</h2>
+      <div class="cs-findings">
+<div class="finding"><div class="num">100</div><p>branches cleaned to the data description: valid regions, 1 to 400 rooms, opening years from 2000 to 2023.</p></div>
+<div class="finding"><div class="num">385</div><p>service-and-branch combinations measured for average and maximum response time.</p></div>
+<div class="finding"><div class="num">5,047</div><p>Meal and Laundry requests across EMEA and LATAM branches identified for management.</p></div>
+<div class="finding"><div class="num">215</div><p>service-and-branch combinations average below the 4.5 rating target.</p></div>
+      </div>
+      
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">How I approached it</h2>
+      <ul class="cs-approach">
+<li>Cleaned the branch table with CASE, TRIM, UPPER and NULLIF, replacing invalid or missing values with the defaults in the brief.</li>
+<li>Used GROUP BY for average and maximum response times by service and branch.</li>
+<li>Joined the request table to two filtered CTEs (locations and services) for the Meal and Laundry list, and used HAVING to flag averages under 4.5.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cs-section" id="work">
+    <div class="wrap">
+      <h2 class="section-title">The code and output</h2>
+      <p class="cs-note">Taken from my DataCamp Workspace notebook for this project.</p>
+<div class="nb-cell">
+<div class="nb-label">Task 1: clean the branch table</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">SELECT</span><span class="tok-w"> </span>
+<span class="tok-w">	</span><span class="tok-n">id</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">CASE</span>
+<span class="tok-w">		</span><span class="tok-k">WHEN</span><span class="tok-w"> </span><span class="tok-n">UPPER</span><span class="tok-p">(</span><span class="tok-k">TRIM</span><span class="tok-p">(</span><span class="tok-k">location</span><span class="tok-p">))</span><span class="tok-w"> </span><span class="tok-k">IN</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-s1">'EMEA'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'NA'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'LATAM'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'APAC'</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">THEN</span><span class="tok-w"> </span><span class="tok-n">UPPER</span><span class="tok-p">(</span><span class="tok-k">TRIM</span><span class="tok-p">(</span><span class="tok-k">location</span><span class="tok-p">))</span>
+<span class="tok-w">		</span><span class="tok-k">ELSE</span><span class="tok-w"> </span><span class="tok-s1">'Unknown'</span>
+<span class="tok-w">	</span><span class="tok-k">END</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-k">location</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">CASE</span>
+<span class="tok-w">		</span><span class="tok-k">WHEN</span><span class="tok-w"> </span><span class="tok-n">total_rooms</span><span class="tok-w"> </span><span class="tok-k">BETWEEN</span><span class="tok-w"> </span><span class="tok-mf">1</span><span class="tok-w"> </span><span class="tok-k">AND</span><span class="tok-w"> </span><span class="tok-mf">400</span><span class="tok-w"> </span><span class="tok-k">THEN</span><span class="tok-w"> </span><span class="tok-n">total_rooms</span><span class="tok-o">::</span><span class="tok-nb">INTEGER</span>
+<span class="tok-w">		</span><span class="tok-k">ELSE</span><span class="tok-w"> </span><span class="tok-mf">100</span>
+<span class="tok-w">	</span><span class="tok-k">END</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">total_rooms</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">ROUND</span><span class="tok-p">(</span><span class="tok-k">COALESCE</span><span class="tok-p">(</span><span class="tok-n">staff_count</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">total_rooms</span><span class="tok-o">::</span><span class="tok-nb">INTEGER</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-mf">1.5</span><span class="tok-p">))</span><span class="tok-w">  </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">staff_count</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">CASE</span>
+<span class="tok-w">		</span><span class="tok-k">WHEN</span><span class="tok-w"> </span><span class="tok-k">NULLIF</span><span class="tok-p">(</span><span class="tok-n">opening_date</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'-'</span><span class="tok-p">)</span><span class="tok-o">::</span><span class="tok-nb">INTEGER</span><span class="tok-w"> </span><span class="tok-k">BETWEEN</span><span class="tok-w"> </span><span class="tok-mf">2000</span><span class="tok-w"> </span><span class="tok-k">AND</span><span class="tok-w"> </span><span class="tok-mf">2023</span><span class="tok-w"> </span>
+<span class="tok-w">		</span><span class="tok-k">THEN</span><span class="tok-w"> </span><span class="tok-k">NULLIF</span><span class="tok-p">(</span><span class="tok-n">opening_date</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'-'</span><span class="tok-p">)</span><span class="tok-o">::</span><span class="tok-nb">INTEGER</span><span class="tok-w"> </span>
+<span class="tok-w">		</span><span class="tok-k">ELSE</span><span class="tok-w"> </span><span class="tok-mf">2023</span>
+<span class="tok-w">	</span><span class="tok-k">END</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">opening_date</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">CASE</span>
+<span class="tok-w">		</span><span class="tok-k">WHEN</span><span class="tok-w"> </span><span class="tok-n">INITCAP</span><span class="tok-p">(</span><span class="tok-k">TRIM</span><span class="tok-p">(</span><span class="tok-n">target_guests</span><span class="tok-p">))</span><span class="tok-w"> </span><span class="tok-k">IN</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-s1">'Leisure'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'L.'</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">THEN</span><span class="tok-w"> </span><span class="tok-s1">'Leisure'</span>
+<span class="tok-w">		</span><span class="tok-k">WHEN</span><span class="tok-w"> </span><span class="tok-n">INITCAP</span><span class="tok-p">(</span><span class="tok-k">TRIM</span><span class="tok-p">(</span><span class="tok-n">target_guests</span><span class="tok-p">))</span><span class="tok-w"> </span><span class="tok-k">IN</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-s1">'Business'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'B.'</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">THEN</span><span class="tok-w"> </span><span class="tok-s1">'Business'</span>
+<span class="tok-w">		</span><span class="tok-k">ELSE</span><span class="tok-w"> </span><span class="tok-s1">'Leisure'</span>
+<span class="tok-w">	</span><span class="tok-k">END</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">target_guests</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">branch</span><span class="tok-p">;</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>id</th>
+      <th>location</th>
+      <th>total_rooms</th>
+      <th>staff_count</th>
+      <th>opening_date</th>
+      <th>target_guests</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>LATAM</td>
+      <td>168</td>
+      <td>178</td>
+      <td>2017</td>
+      <td>Business</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>APAC</td>
+      <td>154</td>
+      <td>82</td>
+      <td>2010</td>
+      <td>Leisure</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>APAC</td>
+      <td>212</td>
+      <td>467</td>
+      <td>2003</td>
+      <td>Leisure</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>APAC</td>
+      <td>230</td>
+      <td>387</td>
+      <td>2023</td>
+      <td>Business</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>APAC</td>
+      <td>292</td>
+      <td>293</td>
+      <td>2002</td>
+      <td>Business</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>95</th>
+      <td>96</td>
+      <td>APAC</td>
+      <td>237</td>
+      <td>257</td>
+      <td>2000</td>
+      <td>Business</td>
+    </tr>
+    <tr>
+      <th>96</th>
+      <td>97</td>
+      <td>APAC</td>
+      <td>107</td>
+      <td>169</td>
+      <td>2005</td>
+      <td>Business</td>
+    </tr>
+    <tr>
+      <th>97</th>
+      <td>98</td>
+      <td>EMEA</td>
+      <td>196</td>
+      <td>126</td>
+      <td>2002</td>
+      <td>Leisure</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>99</td>
+      <td>APAC</td>
+      <td>242</td>
+      <td>251</td>
+      <td>2021</td>
+      <td>Business</td>
+    </tr>
+    <tr>
+      <th>99</th>
+      <td>100</td>
+      <td>LATAM</td>
+      <td>349</td>
+      <td>612</td>
+      <td>2020</td>
+      <td>Business</td>
+    </tr>
+  </tbody>
+</table>
+
+</div></div><div class="nb-cap">100 rows × 6 columns</div>
+</div>
+</div>
+<div class="nb-cell">
+<div class="nb-label">Task 2: response time by service and branch</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">SELECT</span>
+<span class="tok-w">	</span><span class="tok-n">service_id</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">branch_id</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">ROUND</span><span class="tok-p">(</span><span class="tok-n">AVG</span><span class="tok-p">(</span><span class="tok-n">time_taken</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">2</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">avg_time_taken</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">ROUND</span><span class="tok-p">(</span><span class="tok-n">MAX</span><span class="tok-p">(</span><span class="tok-n">time_taken</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">2</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">max_time_taken</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">request</span>
+<span class="tok-k">GROUP</span><span class="tok-w"> </span><span class="tok-k">BY</span><span class="tok-w"> </span><span class="tok-n">branch_id</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">service_id</span><span class="tok-p">;</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>service_id</th>
+      <th>branch_id</th>
+      <th>avg_time_taken</th>
+      <th>max_time_taken</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>4</td>
+      <td>72</td>
+      <td>9.14</td>
+      <td>11.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4</td>
+      <td>85</td>
+      <td>9.45</td>
+      <td>19.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4</td>
+      <td>88</td>
+      <td>9.36</td>
+      <td>12.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>57</td>
+      <td>9.36</td>
+      <td>11.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>54</td>
+      <td>10.30</td>
+      <td>17.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>380</th>
+      <td>1</td>
+      <td>75</td>
+      <td>2.24</td>
+      <td>8.0</td>
+    </tr>
+    <tr>
+      <th>381</th>
+      <td>2</td>
+      <td>46</td>
+      <td>13.09</td>
+      <td>16.0</td>
+    </tr>
+    <tr>
+      <th>382</th>
+      <td>2</td>
+      <td>16</td>
+      <td>13.13</td>
+      <td>15.0</td>
+    </tr>
+    <tr>
+      <th>383</th>
+      <td>3</td>
+      <td>38</td>
+      <td>7.49</td>
+      <td>19.0</td>
+    </tr>
+    <tr>
+      <th>384</th>
+      <td>4</td>
+      <td>12</td>
+      <td>9.00</td>
+      <td>9.0</td>
+    </tr>
+  </tbody>
+</table>
+
+</div></div><div class="nb-cap">385 rows × 4 columns</div>
+</div>
+</div>
+<div class="nb-cell">
+<div class="nb-label">Task 3: Meal and Laundry requests in EMEA and LATAM</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">WITH</span><span class="tok-w"> </span><span class="tok-n">location_query</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-p">(</span>
+<span class="tok-w">	</span><span class="tok-k">SELECT</span><span class="tok-w"> </span><span class="tok-n">id</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-k">location</span>
+<span class="tok-w">	</span><span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">branch</span>
+<span class="tok-w">	</span><span class="tok-k">WHERE</span><span class="tok-w"> </span><span class="tok-k">location</span><span class="tok-w"> </span><span class="tok-k">IN</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-s1">'EMEA'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'LATAM'</span><span class="tok-p">)</span>
+<span class="tok-p">),</span>
+<span class="tok-n">service_query</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-p">(</span>
+<span class="tok-w">	</span><span class="tok-k">SELECT</span><span class="tok-w"> </span><span class="tok-n">id</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">description</span>
+<span class="tok-w">	</span><span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">service</span>
+<span class="tok-w">	</span><span class="tok-k">WHERE</span><span class="tok-w"> </span><span class="tok-n">description</span><span class="tok-w"> </span><span class="tok-k">IN</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-s1">'Meal'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'Laundry'</span><span class="tok-p">)</span>
+<span class="tok-p">)</span>
+<span class="tok-k">SELECT</span>
+<span class="tok-w">	</span><span class="tok-n">sq</span><span class="tok-mf">.</span><span class="tok-n">description</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">lq</span><span class="tok-mf">.</span><span class="tok-n">id</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">lq</span><span class="tok-mf">.</span><span class="tok-k">location</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">r</span><span class="tok-mf">.</span><span class="tok-n">id</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">request_id</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">r</span><span class="tok-mf">.</span><span class="tok-n">rating</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">request</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">r</span>
+<span class="tok-k">JOIN</span><span class="tok-w"> </span><span class="tok-n">location_query</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">lq</span>
+<span class="tok-k">ON</span><span class="tok-w"> </span><span class="tok-n">r</span><span class="tok-mf">.</span><span class="tok-n">branch_id</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">lq</span><span class="tok-mf">.</span><span class="tok-n">id</span>
+<span class="tok-k">JOIN</span><span class="tok-w"> </span><span class="tok-n">service_query</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">sq</span>
+<span class="tok-k">ON</span><span class="tok-w"> </span><span class="tok-n">r</span><span class="tok-mf">.</span><span class="tok-n">service_id</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">sq</span><span class="tok-mf">.</span><span class="tok-n">id</span><span class="tok-p">;</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>description</th>
+      <th>id</th>
+      <th>location</th>
+      <th>request_id</th>
+      <th>rating</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Laundry</td>
+      <td>63</td>
+      <td>EMEA</td>
+      <td>3</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Laundry</td>
+      <td>69</td>
+      <td>LATAM</td>
+      <td>6</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Meal</td>
+      <td>44</td>
+      <td>EMEA</td>
+      <td>18</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Laundry</td>
+      <td>57</td>
+      <td>LATAM</td>
+      <td>19</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Meal</td>
+      <td>1</td>
+      <td>LATAM</td>
+      <td>21</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>5042</th>
+      <td>Meal</td>
+      <td>30</td>
+      <td>EMEA</td>
+      <td>17662</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>5043</th>
+      <td>Meal</td>
+      <td>64</td>
+      <td>LATAM</td>
+      <td>17669</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>5044</th>
+      <td>Meal</td>
+      <td>51</td>
+      <td>LATAM</td>
+      <td>17674</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>5045</th>
+      <td>Meal</td>
+      <td>23</td>
+      <td>EMEA</td>
+      <td>17681</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>5046</th>
+      <td>Meal</td>
+      <td>41</td>
+      <td>LATAM</td>
+      <td>17682</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+
+</div></div><div class="nb-cap">5,047 rows × 5 columns</div>
+</div>
+</div>
+<div class="nb-cell">
+<div class="nb-label">Task 4: service and branch pairs below the 4.5 target</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">SELECT</span>
+<span class="tok-w">	</span><span class="tok-n">service_id</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">branch_id</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">ROUND</span><span class="tok-p">(</span><span class="tok-n">AVG</span><span class="tok-p">(</span><span class="tok-n">rating</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">2</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">avg_rating</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">request</span>
+<span class="tok-k">GROUP</span><span class="tok-w"> </span><span class="tok-k">BY</span><span class="tok-w"> </span><span class="tok-n">service_id</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">branch_id</span>
+<span class="tok-k">HAVING</span><span class="tok-w"> </span><span class="tok-n">AVG</span><span class="tok-p">(</span><span class="tok-n">rating</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">&lt;</span><span class="tok-w"> </span><span class="tok-mf">4.5</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>service_id</th>
+      <th>branch_id</th>
+      <th>avg_rating</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2</td>
+      <td>46</td>
+      <td>3.78</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4</td>
+      <td>99</td>
+      <td>3.83</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>8</td>
+      <td>3.64</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>46</td>
+      <td>3.81</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3</td>
+      <td>15</td>
+      <td>4.00</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>210</th>
+      <td>3</td>
+      <td>8</td>
+      <td>3.38</td>
+    </tr>
+    <tr>
+      <th>211</th>
+      <td>1</td>
+      <td>64</td>
+      <td>3.59</td>
+    </tr>
+    <tr>
+      <th>212</th>
+      <td>4</td>
+      <td>93</td>
+      <td>3.72</td>
+    </tr>
+    <tr>
+      <th>213</th>
+      <td>4</td>
+      <td>88</td>
+      <td>3.60</td>
+    </tr>
+    <tr>
+      <th>214</th>
+      <td>4</td>
+      <td>31</td>
+      <td>4.00</td>
+    </tr>
+  </tbody>
+</table>
+
+</div></div><div class="nb-cap">215 rows × 3 columns</div>
+</div>
+</div>
+    </div>
+  </section>
+
+  <nav class="cs-pager" aria-label="More projects">
+    <div class="wrap">
+      <a class="pg prev" href="grocery-store-sales.html"><small>Previous project</small><strong>Grocery store product data</strong></a>
+      <a class="btn ghost" href="../index.html#python-sql">All projects</a>
+      <a class="pg next" href="customer-support-tickets.html"><small>Next project</small><strong>Customer support ticket analysis</strong></a>
+    </div>
+  </nav>
+
+</main>
+
+<footer class="foot">
+  © <span id="year"></span> Gbolahan Babalobi · Lagos, Nigeria
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuToggle.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Customer support ticket analysis — Gbolahan Babalobi</title>
+<meta name="description" content="Cleaned a support-ticket table, compared response times across ticket categories, and joined survey ratings to the slowest ones." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/case-study.css" />
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="../index.html#top" class="brand">GBOLAHAN.<span>BABALOBI</span></a>
+    <nav class="links" id="navLinks">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#certifications">Certifications</a>
+      <a class="active" href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn ghost" href="../assets/Gbolahan_Babalobi_Resume.pdf" download>Résumé</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="cs-hero">
+    <div class="wrap">
+      <a class="cs-back" href="../index.html#python-sql">All projects</a>
+      <div class="cs-hero-grid">
+        <div>
+          <div class="eyebrow">Sheet 05 — Case study</div>
+          <h1 class="cs-h1">Customer support ticket analysis</h1>
+          <p class="cs-lead">Tech Solutions Inc. has seen customer satisfaction slide. Working with its support team, I cleaned the ticket table to a data description, compared response times across ticket categories, and joined survey ratings to Bug and Installation Problem tickets.</p>
+        </div>
+        <div class="titleblock">
+<div class="tb-row"><span class="k">Tools</span><span class="v">SQL, PostgreSQL</span></div>
+<div class="tb-row"><span class="k">Data</span><span class="v">support and survey tables, 1,987 tickets</span></div>
+<div class="tb-row"><span class="k">Source</span><span class="v">DataCamp sample practical exam</span></div>
+<div class="tb-row"><span class="k">Skills</span><span class="v">Data cleaning, aggregation, joins</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">What I found</h2>
+      <div class="cs-findings">
+<div class="finding"><div class="num">1,987</div><p>support tickets cleaned, with missing values filled as the data description specifies.</p></div>
+<div class="finding"><div class="num">5–17 days</div><p>is the response time range for Installation Problem tickets, the slowest category. Feedback tickets are answered within 1 to 2 days.</p></div>
+<div class="finding"><div class="num">123</div><p>survey ratings linked to Bug and Installation Problem tickets.</p></div>
+      </div>
+      
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">How I approached it</h2>
+      <ul class="cs-approach">
+<li>Cleaned the support table with COALESCE and CASE, and converted text columns to dates and numbers.</li>
+<li>Used GROUP BY to get the minimum and maximum response time for each ticket category.</li>
+<li>Joined survey ratings to tickets and filtered to the two categories of interest.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cs-section" id="work">
+    <div class="wrap">
+      <h2 class="section-title">The code and output</h2>
+      <p class="cs-note">Taken from my DataCamp Workspace notebook for this project.</p>
+<div class="nb-cell">
+<div class="nb-label">Task 1: clean the support table</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">SELECT</span><span class="tok-w"> </span>
+<span class="tok-w">	</span><span class="tok-n">id</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">COALESCE</span><span class="tok-p">(</span><span class="tok-n">customer_id</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">customer_id</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">COALESCE</span><span class="tok-p">(</span><span class="tok-n">category</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'Other'</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">category</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">CASE</span><span class="tok-w"> </span>
+<span class="tok-w">		</span><span class="tok-k">WHEN</span><span class="tok-w"> </span><span class="tok-n">status</span><span class="tok-w"> </span><span class="tok-k">IS</span><span class="tok-w"> </span><span class="tok-k">NULL</span><span class="tok-w"> </span><span class="tok-k">OR</span><span class="tok-w"> </span><span class="tok-n">status</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s1">'-'</span><span class="tok-w"> </span><span class="tok-k">THEN</span><span class="tok-w"> </span><span class="tok-s1">'Resolved'</span>
+<span class="tok-w">		</span><span class="tok-k">ELSE</span><span class="tok-w"> </span><span class="tok-n">status</span>
+<span class="tok-w">	</span><span class="tok-k">END</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">status</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">COALESCE</span><span class="tok-p">(</span><span class="tok-n">creation_date</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'2023-01-01'</span><span class="tok-p">)</span><span class="tok-o">::</span><span class="tok-nb">DATE</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">creation_date</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">COALESCE</span><span class="tok-p">(</span><span class="tok-n">response_time</span><span class="tok-o">::</span><span class="tok-nb">INTEGER</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">response_time</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">ROUND</span><span class="tok-p">(</span><span class="tok-k">COALESCE</span><span class="tok-p">(</span><span class="tok-k">REPLACE</span><span class="tok-p">(</span><span class="tok-n">resolution_time</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'hours'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">''</span><span class="tok-p">)</span><span class="tok-o">::</span><span class="tok-nb">NUMERIC</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">2</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">resolution_time</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-k">support</span><span class="tok-p">;</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>id</th>
+      <th>customer_id</th>
+      <th>category</th>
+      <th>status</th>
+      <th>creation_date</th>
+      <th>response_time</th>
+      <th>resolution_time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>1062</td>
+      <td>Installation Problem</td>
+      <td>In Progress</td>
+      <td>2023-01-26 00:00:00+00:00</td>
+      <td>6</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>892</td>
+      <td>Billing enquiry</td>
+      <td>Open</td>
+      <td>2023-06-18 00:00:00+00:00</td>
+      <td>3</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>433</td>
+      <td>Feedback</td>
+      <td>Open</td>
+      <td>2023-08-17 00:00:00+00:00</td>
+      <td>1</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>6</td>
+      <td>764</td>
+      <td>Billing enquiry</td>
+      <td>Open</td>
+      <td>2023-01-16 00:00:00+00:00</td>
+      <td>3</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>7</td>
+      <td>1144</td>
+      <td>Billing enquiry</td>
+      <td>Open</td>
+      <td>2023-06-01 00:00:00+00:00</td>
+      <td>2</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>1982</th>
+      <td>2995</td>
+      <td>1091</td>
+      <td>Billing enquiry</td>
+      <td>Resolved</td>
+      <td>2023-10-01 00:00:00+00:00</td>
+      <td>3</td>
+      <td>3.93</td>
+    </tr>
+    <tr>
+      <th>1983</th>
+      <td>2996</td>
+      <td>1024</td>
+      <td>Bug</td>
+      <td>In Progress</td>
+      <td>2023-07-31 00:00:00+00:00</td>
+      <td>1</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>1984</th>
+      <td>2997</td>
+      <td>1105</td>
+      <td>Installation Problem</td>
+      <td>In Progress</td>
+      <td>2023-02-06 00:00:00+00:00</td>
+      <td>5</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>1985</th>
+      <td>2998</td>
+      <td>1608</td>
+      <td>Bug</td>
+      <td>In Progress</td>
+      <td>2023-06-10 00:00:00+00:00</td>
+      <td>3</td>
+      <td>0.00</td>
+    </tr>
+    <tr>
+      <th>1986</th>
+      <td>3000</td>
+      <td>1087</td>
+      <td>Installation Problem</td>
+      <td>Open</td>
+      <td>2023-02-15 00:00:00+00:00</td>
+      <td>8</td>
+      <td>0.00</td>
+    </tr>
+  </tbody>
+</table>
+
+</div></div><div class="nb-cap">1,987 rows × 7 columns</div>
+</div>
+</div>
+<div class="nb-cell">
+<div class="nb-label">Task 2: response time by category</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">SELECT</span><span class="tok-w"> </span>
+<span class="tok-w">	</span><span class="tok-n">category</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">ROUND</span><span class="tok-p">(</span><span class="tok-n">MIN</span><span class="tok-p">(</span><span class="tok-n">response_time</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">2</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">min_response</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">ROUND</span><span class="tok-p">(</span><span class="tok-n">MAX</span><span class="tok-p">(</span><span class="tok-n">response_time</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">2</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">max_response</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-k">support</span>
+<span class="tok-k">GROUP</span><span class="tok-w"> </span><span class="tok-k">BY</span><span class="tok-w"> </span><span class="tok-n">category</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>category</th>
+      <th>min_response</th>
+      <th>max_response</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Other</td>
+      <td>1.0</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Bug</td>
+      <td>1.0</td>
+      <td>13.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Feedback</td>
+      <td>1.0</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Billing enquiry</td>
+      <td>2.0</td>
+      <td>8.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Installation Problem</td>
+      <td>5.0</td>
+      <td>17.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><div class="nb-cap">5 rows × 3 columns</div>
+</div>
+</div>
+<div class="nb-cell">
+<div class="nb-label">Task 3: survey ratings for Bug and Installation Problem tickets</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">SELECT</span><span class="tok-w"> </span>
+<span class="tok-w">	</span><span class="tok-n">s</span><span class="tok-mf">.</span><span class="tok-n">rating</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">t</span><span class="tok-mf">.</span><span class="tok-n">customer_id</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">t</span><span class="tok-mf">.</span><span class="tok-n">category</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">t</span><span class="tok-mf">.</span><span class="tok-n">response_time</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">survey</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">s</span>
+<span class="tok-k">LEFT</span><span class="tok-w"> </span><span class="tok-k">JOIN</span><span class="tok-w"> </span><span class="tok-k">support</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-w"> </span>
+<span class="tok-w">	</span><span class="tok-k">ON</span><span class="tok-w"> </span><span class="tok-n">s</span><span class="tok-mf">.</span><span class="tok-n">customer_id</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-mf">.</span><span class="tok-n">customer_id</span>
+<span class="tok-k">WHERE</span><span class="tok-w"> </span><span class="tok-n">t</span><span class="tok-mf">.</span><span class="tok-n">category</span><span class="tok-w"> </span><span class="tok-k">IN</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-s1">'Bug'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'Installation Problem'</span><span class="tok-p">)</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>rating</th>
+      <th>customer_id</th>
+      <th>category</th>
+      <th>response_time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>6</td>
+      <td>621</td>
+      <td>Installation Problem</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>5</td>
+      <td>1703</td>
+      <td>Installation Problem</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>5</td>
+      <td>766</td>
+      <td>Installation Problem</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>5</td>
+      <td>1824</td>
+      <td>Bug</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>931</td>
+      <td>Installation Problem</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>118</th>
+      <td>4</td>
+      <td>1371</td>
+      <td>Installation Problem</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>119</th>
+      <td>4</td>
+      <td>1434</td>
+      <td>Installation Problem</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>120</th>
+      <td>3</td>
+      <td>1228</td>
+      <td>Bug</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>121</th>
+      <td>3</td>
+      <td>926</td>
+      <td>Installation Problem</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>122</th>
+      <td>6</td>
+      <td>1227</td>
+      <td>Installation Problem</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+</div></div><div class="nb-cap">123 rows × 4 columns</div>
+</div>
+</div>
+    </div>
+  </section>
+
+  <nav class="cs-pager" aria-label="More projects">
+    <div class="wrap">
+      <a class="pg prev" href="hotel-operations.html"><small>Previous project</small><strong>Hotel operations: room-service delays</strong></a>
+      <a class="btn ghost" href="../index.html#python-sql">All projects</a>
+      <span></span>
+    </div>
+  </nav>
+
+</main>
+
+<footer class="foot">
+  © <span id="year"></span> Gbolahan Babalobi · Lagos, Nigeria
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuToggle.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+
+</body>
+</html>

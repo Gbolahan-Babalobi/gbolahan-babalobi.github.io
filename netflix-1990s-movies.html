@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Netflix movies of the 1990s — Gbolahan Babalobi</title>
+<meta name="description" content="Exploratory analysis of 4,812 Netflix titles to profile 1990s movies: the typical runtime and how many short action films there were." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/case-study.css" />
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="../index.html#top" class="brand">GBOLAHAN.<span>BABALOBI</span></a>
+    <nav class="links" id="navLinks">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#certifications">Certifications</a>
+      <a class="active" href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn ghost" href="../assets/Gbolahan_Babalobi_Resume.pdf" download>Résumé</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="cs-hero">
+    <div class="wrap">
+      <a class="cs-back" href="../index.html#python-sql">All projects</a>
+      <div class="cs-hero-grid">
+        <div>
+          <div class="eyebrow">Sheet 05 — Case study</div>
+          <h1 class="cs-h1">Netflix movies of the 1990s</h1>
+          <p class="cs-lead">A production company that specializes in nostalgic styles wants to understand 1990s movies. I explored a catalogue of 4,812 Netflix titles to find the most common runtime of the decade and to count its short action movies.</p>
+        </div>
+        <div class="titleblock">
+<div class="tb-row"><span class="k">Tools</span><span class="v">Python, pandas, matplotlib</span></div>
+<div class="tb-row"><span class="k">Data</span><span class="v">netflix_data.csv, 4,812 titles</span></div>
+<div class="tb-row"><span class="k">Source</span><span class="v">DataCamp project</span></div>
+<div class="tb-row"><span class="k">Skills</span><span class="v">Exploratory analysis, histograms, conditional counts</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">What I found</h2>
+      <div class="cs-findings">
+<div class="finding"><div class="num">183</div><p>movies from the 1990s in the catalogue, out of 4,677 movies in total.</p></div>
+<div class="finding"><div class="num">95–111 min</div><p>is where runtimes cluster: the tallest bar of the histogram holds 47 films. The single most common runtime is 94 minutes.</p></div>
+<div class="finding"><div class="num">7</div><p>of the 48 action movies from the decade run for under 90 minutes.</p></div>
+      </div>
+      
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">How I approached it</h2>
+      <ul class="cs-approach">
+<li>Filtered the titles to movies, then to release years from 1990 to 1999.</li>
+<li>Plotted a histogram of runtimes with matplotlib to see where films cluster, then computed the most common runtime.</li>
+<li>Looped over the decade’s action movies and counted those under 90 minutes.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cs-section" id="work">
+    <div class="wrap">
+      <h2 class="section-title">The code and output</h2>
+      <p class="cs-note">Taken from my DataCamp Workspace notebook for this project.</p>
+<div class="nb-cell">
+<div class="nb-label">Load the data</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-c1"># Importing pandas and matplotlib</span>
+<span class="tok-kn">import</span><span class="tok-w"> </span><span class="tok-nn">pandas</span><span class="tok-w"> </span><span class="tok-k">as</span><span class="tok-w"> </span><span class="tok-nn">pd</span>
+<span class="tok-kn">import</span><span class="tok-w"> </span><span class="tok-nn">matplotlib.pyplot</span><span class="tok-w"> </span><span class="tok-k">as</span><span class="tok-w"> </span><span class="tok-nn">plt</span>
+
+<span class="tok-c1"># Read in the Netflix CSV as a DataFrame</span>
+<span class="tok-n">netflix_df</span> <span class="tok-o">=</span> <span class="tok-n">pd</span><span class="tok-o">.</span><span class="tok-n">read_csv</span><span class="tok-p">(</span><span class="tok-s2">"netflix_data.csv"</span><span class="tok-p">)</span>
+
+<span class="tok-n">netflix_df</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>show_id</th>
+      <th>type</th>
+      <th>title</th>
+      <th>director</th>
+      <th>cast</th>
+      <th>country</th>
+      <th>date_added</th>
+      <th>release_year</th>
+      <th>duration</th>
+      <th>description</th>
+      <th>genre</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>s2</td>
+      <td>Movie</td>
+      <td>7:19</td>
+      <td>Jorge Michel Grau</td>
+      <td>Demián Bichir, Héctor Bonilla, Oscar Serrano, ...</td>
+      <td>Mexico</td>
+      <td>December 23, 2016</td>
+      <td>2016</td>
+      <td>93</td>
+      <td>After a devastating earthquake hits Mexico Cit...</td>
+      <td>Dramas</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>s3</td>
+      <td>Movie</td>
+      <td>23:59</td>
+      <td>Gilbert Chan</td>
+      <td>Tedd Chan, Stella Chung, Henley Hii, Lawrence ...</td>
+      <td>Singapore</td>
+      <td>December 20, 2018</td>
+      <td>2011</td>
+      <td>78</td>
+      <td>When an army recruit is found dead, his fellow...</td>
+      <td>Horror Movies</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>s4</td>
+      <td>Movie</td>
+      <td>9</td>
+      <td>Shane Acker</td>
+      <td>Elijah Wood, John C. Reilly, Jennifer Connelly...</td>
+      <td>United States</td>
+      <td>November 16, 2017</td>
+      <td>2009</td>
+      <td>80</td>
+      <td>In a postapocalyptic world, rag-doll robots hi...</td>
+      <td>Action</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>s5</td>
+      <td>Movie</td>
+      <td>21</td>
+      <td>Robert Luketic</td>
+      <td>Jim Sturgess, Kevin Spacey, Kate Bosworth, Aar...</td>
+      <td>United States</td>
+      <td>January 1, 2020</td>
+      <td>2008</td>
+      <td>123</td>
+      <td>A brilliant group of students become card-coun...</td>
+      <td>Dramas</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>s6</td>
+      <td>TV Show</td>
+      <td>46</td>
+      <td>Serdar Akar</td>
+      <td>Erdal Beşikçioğlu, Yasemin Allen, Melis Birkan...</td>
+      <td>Turkey</td>
+      <td>July 1, 2017</td>
+      <td>2016</td>
+      <td>1</td>
+      <td>A genetics professor experiments with a treatm...</td>
+      <td>International TV</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>4807</th>
+      <td>s7779</td>
+      <td>Movie</td>
+      <td>Zombieland</td>
+      <td>Ruben Fleischer</td>
+      <td>Jesse Eisenberg, Woody Harrelson, Emma Stone, ...</td>
+      <td>United States</td>
+      <td>November 1, 2019</td>
+      <td>2009</td>
+      <td>88</td>
+      <td>Looking to survive in a world taken over by zo...</td>
+      <td>Comedies</td>
+    </tr>
+    <tr>
+      <th>4808</th>
+      <td>s7781</td>
+      <td>Movie</td>
+      <td>Zoo</td>
+      <td>Shlok Sharma</td>
+      <td>Shashank Arora, Shweta Tripathi, Rahul Kumar, ...</td>
+      <td>India</td>
+      <td>July 1, 2018</td>
+      <td>2018</td>
+      <td>94</td>
+      <td>A drug dealer starts having doubts about his t...</td>
+      <td>Dramas</td>
+    </tr>
+    <tr>
+      <th>4809</th>
+      <td>s7782</td>
+      <td>Movie</td>
+      <td>Zoom</td>
+      <td>Peter Hewitt</td>
+      <td>Tim Allen, Courteney Cox, Chevy Chase, Kate Ma...</td>
+      <td>United States</td>
+      <td>January 11, 2020</td>
+      <td>2006</td>
+      <td>88</td>
+      <td>Dragged from civilian life, a former superhero...</td>
+      <td>Children</td>
+    </tr>
+    <tr>
+      <th>4810</th>
+      <td>s7783</td>
+      <td>Movie</td>
+      <td>Zozo</td>
+      <td>Josef Fares</td>
+      <td>Imad Creidi, Antoinette Turk, Elias Gergi, Car...</td>
+      <td>Sweden</td>
+      <td>October 19, 2020</td>
+      <td>2005</td>
+      <td>99</td>
+      <td>When Lebanon's Civil War deprives Zozo of his ...</td>
+      <td>Dramas</td>
+    </tr>
+    <tr>
+      <th>4811</th>
+      <td>s7784</td>
+      <td>Movie</td>
+      <td>Zubaan</td>
+      <td>Mozez Singh</td>
+      <td>Vicky Kaushal, Sarah-Jane Dias, Raaghav Chanan...</td>
+      <td>India</td>
+      <td>March 2, 2019</td>
+      <td>2015</td>
+      <td>111</td>
+      <td>A scrappy but poor boy worms his way into a ty...</td>
+      <td>Dramas</td>
+    </tr>
+  </tbody>
+</table>
+
+</div></div><div class="nb-cap">4,812 rows × 11 columns</div>
+</div>
+</div>
+<div class="nb-cell">
+<div class="nb-label">Filter the 1990s movies, plot runtimes and count short action films</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-c1"># Subset the DataFrame for type "Movie"</span>
+<span class="tok-n">netflix_subset</span> <span class="tok-o">=</span> <span class="tok-n">netflix_df</span><span class="tok-p">[</span><span class="tok-n">netflix_df</span><span class="tok-p">[</span><span class="tok-s2">"type"</span><span class="tok-p">]</span> <span class="tok-o">==</span> <span class="tok-s2">"Movie"</span><span class="tok-p">]</span>
+
+<span class="tok-c1"># Filter movies released in the 1990s</span>
+<span class="tok-n">movies_1990s</span> <span class="tok-o">=</span> <span class="tok-n">netflix_subset</span><span class="tok-p">[(</span><span class="tok-n">netflix_subset</span><span class="tok-p">[</span><span class="tok-s1">'release_year'</span><span class="tok-p">]</span> <span class="tok-o">&gt;=</span> <span class="tok-mi">1990</span><span class="tok-p">)</span> <span class="tok-o">&amp;</span> <span class="tok-p">(</span><span class="tok-n">netflix_subset</span><span class="tok-p">[</span><span class="tok-s1">'release_year'</span><span class="tok-p">]</span> <span class="tok-o">&lt;</span> <span class="tok-mi">2000</span><span class="tok-p">)]</span>
+
+<span class="tok-c1"># Plot histogram of durations</span>
+<span class="tok-n">plt</span><span class="tok-o">.</span><span class="tok-n">hist</span><span class="tok-p">(</span><span class="tok-n">movies_1990s</span><span class="tok-p">[</span><span class="tok-s1">'duration'</span><span class="tok-p">])</span>
+<span class="tok-n">plt</span><span class="tok-o">.</span><span class="tok-n">title</span><span class="tok-p">(</span><span class="tok-s1">'Histogram of Movie Durations (1990s)'</span><span class="tok-p">)</span>
+<span class="tok-n">plt</span><span class="tok-o">.</span><span class="tok-n">xlabel</span><span class="tok-p">(</span><span class="tok-s1">'Duration (minutes)'</span><span class="tok-p">)</span>
+<span class="tok-n">plt</span><span class="tok-o">.</span><span class="tok-n">ylabel</span><span class="tok-p">(</span><span class="tok-s1">'Number of Movies'</span><span class="tok-p">)</span>
+<span class="tok-n">plt</span><span class="tok-o">.</span><span class="tok-n">show</span><span class="tok-p">()</span>
+
+<span class="tok-c1"># The histogram peaks at roughly 95-111 minutes; the exact most common runtime is computed</span>
+<span class="tok-n">duration</span> <span class="tok-o">=</span> <span class="tok-nb">int</span><span class="tok-p">(</span><span class="tok-n">movies_1990s</span><span class="tok-p">[</span><span class="tok-s1">'duration'</span><span class="tok-p">]</span><span class="tok-o">.</span><span class="tok-n">mode</span><span class="tok-p">()[</span><span class="tok-mi">0</span><span class="tok-p">])</span>
+
+<span class="tok-c1"># Filter action movies </span>
+<span class="tok-n">action_movies</span> <span class="tok-o">=</span> <span class="tok-n">movies_1990s</span><span class="tok-p">[</span><span class="tok-n">movies_1990s</span><span class="tok-p">[</span><span class="tok-s1">'genre'</span><span class="tok-p">]</span> <span class="tok-o">==</span> <span class="tok-s1">'Action'</span><span class="tok-p">]</span>
+
+<span class="tok-c1"># Initialize a counter</span>
+<span class="tok-n">short_movie_count</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
+
+<span class="tok-k">for</span> <span class="tok-n">lab</span><span class="tok-p">,</span> <span class="tok-n">row</span> <span class="tok-ow">in</span> <span class="tok-n">action_movies</span><span class="tok-o">.</span><span class="tok-n">iterrows</span><span class="tok-p">():</span>
+    <span class="tok-k">if</span> <span class="tok-n">row</span><span class="tok-p">[</span><span class="tok-s1">'duration'</span><span class="tok-p">]</span> <span class="tok-o">&lt;</span> <span class="tok-mi">90</span><span class="tok-p">:</span>
+        <span class="tok-n">short_movie_count</span> <span class="tok-o">+=</span> <span class="tok-mi">1</span>
+
+<span class="tok-nb">print</span><span class="tok-p">(</span><span class="tok-sa">f</span><span class="tok-s2">"most frequent duration is </span><span class="tok-si">{</span><span class="tok-n">duration</span><span class="tok-si">}</span><span class="tok-s2">"</span><span class="tok-p">)</span>
+<span class="tok-nb">print</span><span class="tok-p">(</span><span class="tok-sa">f</span><span class="tok-s2">"short_movie_count is </span><span class="tok-si">{</span><span class="tok-n">short_movie_count</span><span class="tok-si">}</span><span class="tok-s2">"</span><span class="tok-p">)</span></code></pre>
+<div class="nb-out">
+<div class="nb-fig"><img src="../assets/projects/netflix-1990s-movies-figure-1.png" alt="Histogram of movie durations in minutes for the 1990s, peaking between about 95 and 111 minutes" loading="lazy"></div>
+<pre class="nb-text" tabindex="0">most frequent duration is 94
+short_movie_count is 7</pre>
+</div>
+</div>
+    </div>
+  </section>
+
+  <nav class="cs-pager" aria-label="More projects">
+    <div class="wrap">
+      <a class="pg prev" href="nyc-school-sat.html"><small>Previous project</small><strong>NYC public school SAT performance</strong></a>
+      <a class="btn ghost" href="../index.html#python-sql">All projects</a>
+      <a class="pg next" href="student-mental-health.html"><small>Next project</small><strong>International students and mental health</strong></a>
+    </div>
+  </nav>
+
+</main>
+
+<footer class="foot">
+  © <span id="year"></span> Gbolahan Babalobi · Lagos, Nigeria
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuToggle.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+
+</body>
+</html>

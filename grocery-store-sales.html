@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Grocery store product data — Gbolahan Babalobi</title>
+<meta name="description" content="Cleaned a 1,700-row product table to a data description in SQL, then summarized prices by product type." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/case-study.css" />
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="../index.html#top" class="brand">GBOLAHAN.<span>BABALOBI</span></a>
+    <nav class="links" id="navLinks">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#certifications">Certifications</a>
+      <a class="active" href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn ghost" href="../assets/Gbolahan_Babalobi_Resume.pdf" download>Résumé</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="cs-hero">
+    <div class="wrap">
+      <a class="cs-back" href="../index.html#python-sql">All projects</a>
+      <div class="cs-hero-grid">
+        <div>
+          <div class="eyebrow">Sheet 05 — Case study</div>
+          <h1 class="cs-h1">Grocery store product data</h1>
+          <p class="cs-lead">FoodYum, a US grocery chain, wants to keep stocking products across a range of prices as food costs rise. I worked through four tasks on its products table: counting records with a missing year, cleaning the table to match a data description without changing the original, finding price ranges by product type, and pulling high-selling meat and dairy lines.</p>
+        </div>
+        <div class="titleblock">
+<div class="tb-row"><span class="k">Tools</span><span class="v">SQL, PostgreSQL</span></div>
+<div class="tb-row"><span class="k">Data</span><span class="v">products table, 1,700 rows</span></div>
+<div class="tb-row"><span class="k">Source</span><span class="v">DataCamp practical exam</span></div>
+<div class="tb-row"><span class="k">Skills</span><span class="v">Data cleaning, imputation, subqueries, medians</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">What I found</h2>
+      <div class="cs-findings">
+<div class="finding"><div class="num">170</div><p>of the 1,700 products have no year_added value.</p></div>
+<div class="finding"><div class="num">$3.46–$8.78</div><p>is the price range for produce, the lowest of any type. Meat is the highest at $11.48–$16.98.</p></div>
+<div class="finding"><div class="num">698</div><p>meat and dairy products average more than 10 units sold a month.</p></div>
+      </div>
+      
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">How I approached it</h2>
+      <ul class="cs-approach">
+<li>Counted missing years with an IS NULL filter.</li>
+<li>Cleaned every column in one SELECT: standardized text with INITCAP, UPPER and NULLIF, filled gaps with COALESCE, and imputed missing weights and prices with the median from PERCENTILE_CONT.</li>
+<li>Used GROUP BY for the price range per product type and a filter for meat and dairy above 10 units sold.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cs-section" id="work">
+    <div class="wrap">
+      <h2 class="section-title">The code and output</h2>
+      <p class="cs-note">Taken from my DataCamp Workspace notebook for this project.</p>
+<div class="nb-cell">
+<div class="nb-label">Task 1: products with a missing year</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">SELECT</span><span class="tok-w"> </span><span class="tok-n">COUNT</span><span class="tok-p">(</span><span class="tok-o">*</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">missing_year</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">products</span>
+<span class="tok-k">WHERE</span><span class="tok-w"> </span><span class="tok-n">year_added</span><span class="tok-w"> </span><span class="tok-k">IS</span><span class="tok-w"> </span><span class="tok-k">NULL</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>missing_year</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>170</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><div class="nb-cap">1 rows × 1 columns</div>
+</div>
+</div>
+<div class="nb-cell">
+<div class="nb-label">Task 2: clean the product table</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">SELECT</span>
+<span class="tok-w">	</span><span class="tok-n">product_id</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">CASE</span>
+<span class="tok-w">		</span><span class="tok-k">WHEN</span><span class="tok-w"> </span><span class="tok-n">INITCAP</span><span class="tok-p">(</span><span class="tok-n">product_type</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">IN</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-s1">'Produce'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'Meat'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'Dairy'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'Bakery'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'Snacks'</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">THEN</span><span class="tok-w"> </span><span class="tok-n">INITCAP</span><span class="tok-p">(</span><span class="tok-n">product_type</span><span class="tok-p">)</span>
+<span class="tok-w">		</span><span class="tok-k">ELSE</span><span class="tok-w"> </span><span class="tok-s1">'Unknown'</span>
+<span class="tok-w">	</span><span class="tok-k">END</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">product_type</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">COALESCE</span><span class="tok-p">(</span><span class="tok-k">NULLIF</span><span class="tok-p">(</span><span class="tok-n">brand</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'-'</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-s1">'Unknown'</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">brand</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">ROUND</span><span class="tok-p">(</span><span class="tok-k">COALESCE</span><span class="tok-p">(</span>
+<span class="tok-w">		</span><span class="tok-k">REPLACE</span><span class="tok-p">(</span><span class="tok-n">weight</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">' grams'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">''</span><span class="tok-p">)</span><span class="tok-o">::</span><span class="tok-nb">NUMERIC</span><span class="tok-p">,</span>
+<span class="tok-w">		</span><span class="tok-p">(</span><span class="tok-k">SELECT</span><span class="tok-w"> </span><span class="tok-n">PERCENTILE_CONT</span><span class="tok-p">(</span><span class="tok-mf">0.5</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">WITHIN</span><span class="tok-w"> </span><span class="tok-k">GROUP</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-k">ORDER</span><span class="tok-w"> </span><span class="tok-k">BY</span><span class="tok-w"> </span><span class="tok-k">REPLACE</span><span class="tok-p">(</span><span class="tok-n">weight</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">' grams'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">''</span><span class="tok-p">)</span><span class="tok-o">::</span><span class="tok-nb">NUMERIC</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">products</span><span class="tok-p">)</span><span class="tok-o">::</span><span class="tok-nb">NUMERIC</span>
+<span class="tok-w">	</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">2</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">weight</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">ROUND</span><span class="tok-p">(</span><span class="tok-k">COALESCE</span><span class="tok-p">(</span>
+<span class="tok-w">		</span><span class="tok-n">price</span><span class="tok-o">::</span><span class="tok-nb">NUMERIC</span><span class="tok-p">,</span>
+<span class="tok-w">		</span><span class="tok-p">(</span><span class="tok-k">SELECT</span><span class="tok-w"> </span><span class="tok-n">PERCENTILE_CONT</span><span class="tok-p">(</span><span class="tok-mf">0.5</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">WITHIN</span><span class="tok-w"> </span><span class="tok-k">GROUP</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-k">ORDER</span><span class="tok-w"> </span><span class="tok-k">BY</span><span class="tok-w"> </span><span class="tok-n">price</span><span class="tok-o">::</span><span class="tok-nb">NUMERIC</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">products</span><span class="tok-p">)</span><span class="tok-o">::</span><span class="tok-nb">NUMERIC</span>
+<span class="tok-w">	</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">2</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">price</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">COALESCE</span><span class="tok-p">(</span><span class="tok-n">average_units_sold</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">average_units_sold</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">COALESCE</span><span class="tok-p">(</span><span class="tok-n">year_added</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">2022</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">year_added</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-k">CASE</span>
+<span class="tok-w">		</span><span class="tok-k">WHEN</span><span class="tok-w"> </span><span class="tok-n">UPPER</span><span class="tok-p">(</span><span class="tok-n">stock_location</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">IN</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-s1">'A'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'B'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'C'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'D'</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">THEN</span><span class="tok-w"> </span><span class="tok-n">UPPER</span><span class="tok-p">(</span><span class="tok-n">stock_location</span><span class="tok-p">)</span>
+<span class="tok-w">		</span><span class="tok-k">ELSE</span><span class="tok-w"> </span><span class="tok-s1">'Unknown'</span>
+<span class="tok-w">	</span><span class="tok-k">END</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">stock_location</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">products</span><span class="tok-p">;</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>product_id</th>
+      <th>product_type</th>
+      <th>brand</th>
+      <th>weight</th>
+      <th>price</th>
+      <th>average_units_sold</th>
+      <th>year_added</th>
+      <th>stock_location</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>Bakery</td>
+      <td>TopBrand</td>
+      <td>602.61</td>
+      <td>11.00</td>
+      <td>15</td>
+      <td>2022</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>Produce</td>
+      <td>SilverLake</td>
+      <td>478.26</td>
+      <td>8.08</td>
+      <td>22</td>
+      <td>2022</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>Produce</td>
+      <td>TastyTreat</td>
+      <td>532.38</td>
+      <td>6.16</td>
+      <td>21</td>
+      <td>2018</td>
+      <td>B</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>Bakery</td>
+      <td>StandardYums</td>
+      <td>453.43</td>
+      <td>7.26</td>
+      <td>21</td>
+      <td>2021</td>
+      <td>D</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>Produce</td>
+      <td>GoldTree</td>
+      <td>588.63</td>
+      <td>7.88</td>
+      <td>21</td>
+      <td>2020</td>
+      <td>A</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>1695</th>
+      <td>1696</td>
+      <td>Meat</td>
+      <td>TastyTreat</td>
+      <td>503.99</td>
+      <td>14.08</td>
+      <td>25</td>
+      <td>2017</td>
+      <td>A</td>
+    </tr>
+    <tr>
+      <th>1696</th>
+      <td>1697</td>
+      <td>Meat</td>
+      <td>GoldTree</td>
+      <td>526.89</td>
+      <td>16.13</td>
+      <td>25</td>
+      <td>2016</td>
+      <td>D</td>
+    </tr>
+    <tr>
+      <th>1697</th>
+      <td>1698</td>
+      <td>Bakery</td>
+      <td>YumMie</td>
+      <td>583.85</td>
+      <td>7.05</td>
+      <td>16</td>
+      <td>2021</td>
+      <td>A</td>
+    </tr>
+    <tr>
+      <th>1698</th>
+      <td>1699</td>
+      <td>Produce</td>
+      <td>TopBrand</td>
+      <td>441.64</td>
+      <td>8.10</td>
+      <td>19</td>
+      <td>2019</td>
+      <td>A</td>
+    </tr>
+    <tr>
+      <th>1699</th>
+      <td>1700</td>
+      <td>Meat</td>
+      <td>TopBrand</td>
+      <td>518.60</td>
+      <td>15.89</td>
+      <td>24</td>
+      <td>2021</td>
+      <td>A</td>
+    </tr>
+  </tbody>
+</table>
+
+</div></div><div class="nb-cap">1,700 rows × 8 columns</div>
+</div>
+</div>
+<div class="nb-cell">
+<div class="nb-label">Task 3: price range by product type</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">SELECT</span>
+<span class="tok-w">	</span><span class="tok-n">product_type</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">MIN</span><span class="tok-p">(</span><span class="tok-n">price</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">As</span><span class="tok-w"> </span><span class="tok-n">min_price</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">MAX</span><span class="tok-p">(</span><span class="tok-n">price</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">max_price</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">products</span>
+<span class="tok-k">GROUP</span><span class="tok-w"> </span><span class="tok-k">BY</span><span class="tok-w"> </span><span class="tok-n">product_type</span>
+<span class="tok-k">ORDER</span><span class="tok-w"> </span><span class="tok-k">BY</span><span class="tok-w"> </span><span class="tok-n">product_type</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>product_type</th>
+      <th>min_price</th>
+      <th>max_price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Bakery</td>
+      <td>6.26</td>
+      <td>11.88</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Dairy</td>
+      <td>8.33</td>
+      <td>13.97</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Meat</td>
+      <td>11.48</td>
+      <td>16.98</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Produce</td>
+      <td>3.46</td>
+      <td>8.78</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Snacks</td>
+      <td>5.20</td>
+      <td>10.72</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><div class="nb-cap">5 rows × 3 columns</div>
+</div>
+</div>
+<div class="nb-cell">
+<div class="nb-label">Task 4: high-selling meat and dairy</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">SELECT</span>
+<span class="tok-w">	</span><span class="tok-n">product_id</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">price</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">average_units_sold</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">products</span>
+<span class="tok-k">WHERE</span><span class="tok-w"> </span><span class="tok-n">product_type</span><span class="tok-w"> </span><span class="tok-k">IN</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-s1">'Meat'</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s1">'Dairy'</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AND</span><span class="tok-w"> </span><span class="tok-n">average_units_sold</span><span class="tok-w"> </span><span class="tok-o">&gt;</span><span class="tok-w"> </span><span class="tok-mf">10</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>product_id</th>
+      <th>price</th>
+      <th>average_units_sold</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>6</td>
+      <td>16.20</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8</td>
+      <td>15.77</td>
+      <td>28</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>9</td>
+      <td>11.57</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>10</td>
+      <td>13.94</td>
+      <td>27</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>11</td>
+      <td>9.26</td>
+      <td>26</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>693</th>
+      <td>1694</td>
+      <td>16.00</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <th>694</th>
+      <td>1695</td>
+      <td>12.88</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <th>695</th>
+      <td>1696</td>
+      <td>14.08</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <th>696</th>
+      <td>1697</td>
+      <td>16.13</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <th>697</th>
+      <td>1700</td>
+      <td>15.89</td>
+      <td>24</td>
+    </tr>
+  </tbody>
+</table>
+
+</div></div><div class="nb-cap">698 rows × 3 columns</div>
+</div>
+</div>
+    </div>
+  </section>
+
+  <nav class="cs-pager" aria-label="More projects">
+    <div class="wrap">
+      <a class="pg prev" href="motorcycle-parts-revenue.html"><small>Previous project</small><strong>Motorcycle parts: wholesale net revenue</strong></a>
+      <a class="btn ghost" href="../index.html#python-sql">All projects</a>
+      <a class="pg next" href="hotel-operations.html"><small>Next project</small><strong>Hotel operations: room-service delays</strong></a>
+    </div>
+  </nav>
+
+</main>
+
+<footer class="foot">
+  © <span id="year"></span> Gbolahan Babalobi · Lagos, Nigeria
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuToggle.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+
+</body>
+</html>

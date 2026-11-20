@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>International students and mental health — Gbolahan Babalobi</title>
+<meta name="description" content="SQL analysis of a 286-student survey: how depression, social connectedness and acculturative stress change with length of stay." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/case-study.css" />
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="../index.html#top" class="brand">GBOLAHAN.<span>BABALOBI</span></a>
+    <nav class="links" id="navLinks">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#certifications">Certifications</a>
+      <a class="active" href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn ghost" href="../assets/Gbolahan_Babalobi_Resume.pdf" download>Résumé</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="cs-hero">
+    <div class="wrap">
+      <a class="cs-back" href="../index.html#python-sql">All projects</a>
+      <div class="cs-hero-grid">
+        <div>
+          <div class="eyebrow">Sheet 05 — Case study</div>
+          <h1 class="cs-h1">International students and mental health</h1>
+          <p class="cs-lead">A Japanese international university surveyed its students in 2018, and the published study tied social connectedness and acculturative stress to depression among international students. Using PostgreSQL, I explored the survey data to see whether length of stay is part of the picture.</p>
+        </div>
+        <div class="titleblock">
+<div class="tb-row"><span class="k">Tools</span><span class="v">SQL, PostgreSQL</span></div>
+<div class="tb-row"><span class="k">Data</span><span class="v">students table, 286 respondents, 50 columns</span></div>
+<div class="tb-row"><span class="k">Source</span><span class="v">DataCamp project</span></div>
+<div class="tb-row"><span class="k">Skills</span><span class="v">Filtering, grouping, averages, reading small samples</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">What I found</h2>
+      <div class="cs-findings">
+<div class="finding"><div class="num">201</div><p>international students among the 286 survey respondents.</p></div>
+<div class="finding"><div class="num">7.48 → 9.09</div><p>average depression (PHQ-9) score between one and three years of stay. It is 8.57 at four years.</p></div>
+<div class="finding"><div class="num">72.8 → 87.7</div><p>average acculturative stress score between one and four years of stay, while social connectedness slips from 38.1 to 33.9.</p></div>
+      </div>
+      <p class="cs-caveat">Only seven international students stayed longer than four years, with at most three in any group, so I read the one-to-four-year rows only. These are group averages from a small survey: they show a pattern, not a cause.</p>
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">How I approached it</h2>
+      <ul class="cs-approach">
+<li>Previewed the students table (286 rows, 50 columns) to find the depression, social connectedness and acculturative stress fields.</li>
+<li>Filtered to international students and grouped them by length of stay.</li>
+<li>Calculated the student count and the average of each score for every group, rounded to two decimals.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cs-section" id="work">
+    <div class="wrap">
+      <h2 class="section-title">The code and output</h2>
+      <p class="cs-note">Taken from my DataCamp Workspace notebook for this project.</p>
+<div class="nb-cell">
+<div class="nb-label">Preview the students table</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-c1">-- Run this code to view the data in students</span>
+<span class="tok-k">SELECT</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w"> </span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">students</span><span class="tok-p">;</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>inter_dom</th>
+      <th>region</th>
+      <th>gender</th>
+      <th>academic</th>
+      <th>age</th>
+      <th>age_cate</th>
+      <th>stay</th>
+      <th>stay_cate</th>
+      <th>japanese</th>
+      <th>japanese_cate</th>
+      <th>english</th>
+      <th>english_cate</th>
+      <th>intimate</th>
+      <th>religion</th>
+      <th>suicide</th>
+      <th>dep</th>
+      <th>deptype</th>
+      <th>todep</th>
+      <th>depsev</th>
+      <th>tosc</th>
+      <th>apd</th>
+      <th>ahome</th>
+      <th>aph</th>
+      <th>afear</th>
+      <th>acs</th>
+      <th>aguilt</th>
+      <th>amiscell</th>
+      <th>toas</th>
+      <th>partner</th>
+      <th>friends</th>
+      <th>parents</th>
+      <th>relative</th>
+      <th>profess</th>
+      <th>phone</th>
+      <th>doctor</th>
+      <th>reli</th>
+      <th>alone</th>
+      <th>others</th>
+      <th>internet</th>
+      <th>partner_bi</th>
+      <th>friends_bi</th>
+      <th>parents_bi</th>
+      <th>relative_bi</th>
+      <th>professional_bi</th>
+      <th>phone_bi</th>
+      <th>doctor_bi</th>
+      <th>religion_bi</th>
+      <th>alone_bi</th>
+      <th>others_bi</th>
+      <th>internet_bi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Inter</td>
+      <td>SEA</td>
+      <td>Male</td>
+      <td>Grad</td>
+      <td>24.0</td>
+      <td>4.0</td>
+      <td>5.0</td>
+      <td>Long</td>
+      <td>3.0</td>
+      <td>Average</td>
+      <td>5.0</td>
+      <td>High</td>
+      <td></td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>0.0</td>
+      <td>Min</td>
+      <td>34.0</td>
+      <td>23.0</td>
+      <td>9.0</td>
+      <td>11.0</td>
+      <td>8.0</td>
+      <td>11.0</td>
+      <td>2.0</td>
+      <td>27.0</td>
+      <td>91.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>6.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>4.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>NaN</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Inter</td>
+      <td>SEA</td>
+      <td>Male</td>
+      <td>Grad</td>
+      <td>28.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>Short</td>
+      <td>4.0</td>
+      <td>High</td>
+      <td>4.0</td>
+      <td>High</td>
+      <td></td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>2.0</td>
+      <td>Min</td>
+      <td>48.0</td>
+      <td>8.0</td>
+      <td>7.0</td>
+      <td>5.0</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>2.0</td>
+      <td>10.0</td>
+      <td>39.0</td>
+      <td>7.0</td>
+      <td>7.0</td>
+      <td>7.0</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Inter</td>
+      <td>SEA</td>
+      <td>Male</td>
+      <td>Grad</td>
+      <td>25.0</td>
+      <td>4.0</td>
+      <td>6.0</td>
+      <td>Long</td>
+      <td>4.0</td>
+      <td>High</td>
+      <td>4.0</td>
+      <td>High</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>2.0</td>
+      <td>Min</td>
+      <td>41.0</td>
+      <td>13.0</td>
+      <td>4.0</td>
+      <td>7.0</td>
+      <td>6.0</td>
+      <td>4.0</td>
+      <td>3.0</td>
+      <td>14.0</td>
+      <td>51.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Inter</td>
+      <td>EA</td>
+      <td>Female</td>
+      <td>Grad</td>
+      <td>29.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>Short</td>
+      <td>2.0</td>
+      <td>Low</td>
+      <td>3.0</td>
+      <td>Average</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>3.0</td>
+      <td>Min</td>
+      <td>37.0</td>
+      <td>16.0</td>
+      <td>10.0</td>
+      <td>10.0</td>
+      <td>8.0</td>
+      <td>6.0</td>
+      <td>4.0</td>
+      <td>21.0</td>
+      <td>75.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>2.0</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>NaN</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Inter</td>
+      <td>EA</td>
+      <td>Female</td>
+      <td>Grad</td>
+      <td>28.0</td>
+      <td>5.0</td>
+      <td>1.0</td>
+      <td>Short</td>
+      <td>1.0</td>
+      <td>Low</td>
+      <td>3.0</td>
+      <td>Average</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>3.0</td>
+      <td>Min</td>
+      <td>37.0</td>
+      <td>15.0</td>
+      <td>12.0</td>
+      <td>5.0</td>
+      <td>8.0</td>
+      <td>7.0</td>
+      <td>4.0</td>
+      <td>31.0</td>
+      <td>82.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>5.0</td>
+      <td>4.0</td>
+      <td>4.0</td>
+      <td>NaN</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>281</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>128</td>
+      <td>140</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>282</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>137</td>
+      <td>131</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>283</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>66</td>
+      <td>202</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>284</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>61</td>
+      <td>207</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>285</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>NaN</td>
+      <td></td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>30</td>
+      <td>238</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+</div></div><div class="nb-cap">286 rows × 50 columns</div>
+</div>
+</div>
+<div class="nb-cell">
+<div class="nb-label">Compare scores by length of stay</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-k">SELECT</span>
+<span class="tok-w">	</span><span class="tok-n">stay</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">COUNT</span><span class="tok-p">(</span><span class="tok-o">*</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">count_int</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">ROUND</span><span class="tok-p">(</span><span class="tok-n">AVG</span><span class="tok-p">(</span><span class="tok-n">todep</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">2</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">average_phq</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">ROUND</span><span class="tok-p">(</span><span class="tok-n">AVG</span><span class="tok-p">(</span><span class="tok-n">tosc</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">2</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">average_scs</span><span class="tok-p">,</span>
+<span class="tok-w">	</span><span class="tok-n">ROUND</span><span class="tok-p">(</span><span class="tok-n">AVG</span><span class="tok-p">(</span><span class="tok-n">toas</span><span class="tok-p">),</span><span class="tok-w"> </span><span class="tok-mf">2</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-k">AS</span><span class="tok-w"> </span><span class="tok-n">average_as</span>
+<span class="tok-k">FROM</span><span class="tok-w"> </span><span class="tok-n">students</span>
+<span class="tok-k">WHERE</span><span class="tok-w"> </span><span class="tok-n">inter_dom</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s1">'Inter'</span>
+<span class="tok-k">GROUP</span><span class="tok-w"> </span><span class="tok-k">BY</span><span class="tok-w"> </span><span class="tok-n">stay</span>
+<span class="tok-k">ORDER</span><span class="tok-w"> </span><span class="tok-k">BY</span><span class="tok-w"> </span><span class="tok-n">stay</span><span class="tok-w"> </span><span class="tok-k">DESC</span></code></pre>
+<div class="nb-out">
+<div class="nb-table" tabindex="0"><div>
+
+<table class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>stay</th>
+      <th>count_int</th>
+      <th>average_phq</th>
+      <th>average_scs</th>
+      <th>average_as</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10</td>
+      <td>1</td>
+      <td>13.00</td>
+      <td>32.00</td>
+      <td>50.00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8</td>
+      <td>1</td>
+      <td>10.00</td>
+      <td>44.00</td>
+      <td>65.00</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>7</td>
+      <td>1</td>
+      <td>4.00</td>
+      <td>48.00</td>
+      <td>45.00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>6</td>
+      <td>3</td>
+      <td>6.00</td>
+      <td>38.00</td>
+      <td>58.67</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>1</td>
+      <td>0.00</td>
+      <td>34.00</td>
+      <td>91.00</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>4</td>
+      <td>14</td>
+      <td>8.57</td>
+      <td>33.93</td>
+      <td>87.71</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>3</td>
+      <td>46</td>
+      <td>9.09</td>
+      <td>37.13</td>
+      <td>78.00</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>2</td>
+      <td>39</td>
+      <td>8.28</td>
+      <td>37.08</td>
+      <td>77.67</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>1</td>
+      <td>95</td>
+      <td>7.48</td>
+      <td>38.11</td>
+      <td>72.80</td>
+    </tr>
+  </tbody>
+</table>
+</div></div><div class="nb-cap">9 rows × 5 columns</div>
+</div>
+</div>
+    </div>
+  </section>
+
+  <nav class="cs-pager" aria-label="More projects">
+    <div class="wrap">
+      <a class="pg prev" href="netflix-1990s-movies.html"><small>Previous project</small><strong>Netflix movies of the 1990s</strong></a>
+      <a class="btn ghost" href="../index.html#python-sql">All projects</a>
+      <a class="pg next" href="motorcycle-parts-revenue.html"><small>Next project</small><strong>Motorcycle parts: wholesale net revenue</strong></a>
+    </div>
+  </nav>
+
+</main>
+
+<footer class="foot">
+  © <span id="year"></span> Gbolahan Babalobi · Lagos, Nigeria
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuToggle.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+
+</body>
+</html>

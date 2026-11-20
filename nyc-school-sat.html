@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NYC public school SAT performance — Gbolahan Babalobi</title>
+<meta name="description" content="Ranked 375 NYC public high schools on SAT results: the best math scores, the top 10 overall, and the borough with the widest spread." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/case-study.css" />
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="../index.html#top" class="brand">GBOLAHAN.<span>BABALOBI</span></a>
+    <nav class="links" id="navLinks">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#certifications">Certifications</a>
+      <a class="active" href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn ghost" href="../assets/Gbolahan_Babalobi_Resume.pdf" download>Résumé</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="cs-hero">
+    <div class="wrap">
+      <a class="cs-back" href="../index.html#python-sql">All projects</a>
+      <div class="cs-hero-grid">
+        <div>
+          <div class="eyebrow">Sheet 05 — Case study</div>
+          <h1 class="cs-h1">NYC public school SAT performance</h1>
+          <p class="cs-lead">New York City students sit the SAT each year, scored out of 800 in math, reading and writing. Working from a single table of 375 public high schools, I answered three questions that parents, researchers and policymakers tend to ask: who leads in math, who leads overall, and where results vary most.</p>
+        </div>
+        <div class="titleblock">
+<div class="tb-row"><span class="k">Tools</span><span class="v">Python, pandas</span></div>
+<div class="tb-row"><span class="k">Data</span><span class="v">schools.csv, 375 schools</span></div>
+<div class="tb-row"><span class="k">Source</span><span class="v">DataCamp project</span></div>
+<div class="tb-row"><span class="k">Skills</span><span class="v">Filtering, derived columns, groupby aggregation</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">What I found</h2>
+      <div class="cs-findings">
+<div class="finding"><div class="num">10</div><p>schools score at least 640 in math (80% of the 800 maximum). Stuyvesant High School leads with 754.</p></div>
+<div class="finding"><div class="num">2,144</div><p>is Stuyvesant’s combined score out of 2,400, the highest in the city. Bronx High School of Science and Staten Island Technical High School tie for second at 2,041.</p></div>
+<div class="finding"><div class="num">Manhattan</div><p>has the widest spread in combined scores: a standard deviation of 230.29 across 89 schools, with an average of 1,340.13.</p></div>
+      </div>
+      
+    </div>
+  </section>
+
+  <section class="cs-section">
+    <div class="wrap">
+      <h2 class="section-title">How I approached it</h2>
+      <ul class="cs-approach">
+<li>Filtered schools whose math average is at least 80% of 800, then sorted from highest to lowest.</li>
+<li>Created a total_SAT column by summing the three section averages for each school, then ranked the top 10.</li>
+<li>Grouped by borough with groupby and transform to get the school count, mean and standard deviation, rounded to two decimals, and kept the borough with the largest standard deviation.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cs-section" id="work">
+    <div class="wrap">
+      <h2 class="section-title">The code and output</h2>
+      <p class="cs-note">Taken from my DataCamp Workspace notebook for this project.</p>
+<div class="nb-cell">
+<div class="nb-label">Load the data and answer all three questions</div>
+<pre class="nb-code" tabindex="0"><code><span class="tok-kn">import</span><span class="tok-w"> </span><span class="tok-nn">pandas</span><span class="tok-w"> </span><span class="tok-k">as</span><span class="tok-w"> </span><span class="tok-nn">pd</span>
+
+<span class="tok-c1"># Read in the data</span>
+<span class="tok-n">schools</span> <span class="tok-o">=</span> <span class="tok-n">pd</span><span class="tok-o">.</span><span class="tok-n">read_csv</span><span class="tok-p">(</span><span class="tok-s2">"schools.csv"</span><span class="tok-p">)</span>
+
+<span class="tok-c1"># Preview the data</span>
+<span class="tok-n">schools</span><span class="tok-o">.</span><span class="tok-n">head</span><span class="tok-p">()</span>
+
+<span class="tok-c1"># Finding schools with the best math scores</span>
+<span class="tok-n">best_math_schools</span> <span class="tok-o">=</span> <span class="tok-n">schools</span><span class="tok-p">[</span><span class="tok-n">schools</span><span class="tok-p">[</span><span class="tok-s2">"average_math"</span><span class="tok-p">]</span> <span class="tok-o">&gt;=</span> <span class="tok-mf">0.8</span> <span class="tok-o">*</span> <span class="tok-mi">800</span><span class="tok-p">][[</span><span class="tok-s2">"school_name"</span><span class="tok-p">,</span> <span class="tok-s2">"average_math"</span><span class="tok-p">]]</span><span class="tok-o">.</span><span class="tok-n">sort_values</span><span class="tok-p">(</span><span class="tok-s2">"average_math"</span><span class="tok-p">,</span> <span class="tok-n">ascending</span><span class="tok-o">=</span><span class="tok-kc">False</span><span class="tok-p">)</span>
+
+<span class="tok-c1"># Creating a column to calculate the total score for the schools</span>
+<span class="tok-n">schools</span><span class="tok-p">[</span><span class="tok-s2">"total_SAT"</span><span class="tok-p">]</span> <span class="tok-o">=</span> <span class="tok-n">schools</span><span class="tok-p">[[</span><span class="tok-s2">"average_math"</span><span class="tok-p">,</span> <span class="tok-s2">"average_reading"</span><span class="tok-p">,</span> <span class="tok-s2">"average_writing"</span><span class="tok-p">]]</span><span class="tok-o">.</span><span class="tok-n">sum</span><span class="tok-p">(</span><span class="tok-n">axis</span><span class="tok-o">=</span><span class="tok-mi">1</span><span class="tok-p">)</span>
+
+<span class="tok-c1"># Find the Top 10 schools based on the total score </span>
+<span class="tok-n">top_10_schools</span> <span class="tok-o">=</span> <span class="tok-n">schools</span><span class="tok-p">[[</span><span class="tok-s2">"school_name"</span><span class="tok-p">,</span> <span class="tok-s2">"total_SAT"</span><span class="tok-p">]]</span><span class="tok-o">.</span><span class="tok-n">sort_values</span><span class="tok-p">(</span><span class="tok-s2">"total_SAT"</span><span class="tok-p">,</span> <span class="tok-n">ascending</span><span class="tok-o">=</span><span class="tok-kc">False</span><span class="tok-p">)</span><span class="tok-o">.</span><span class="tok-n">head</span><span class="tok-p">(</span><span class="tok-mi">10</span><span class="tok-p">)</span>
+
+<span class="tok-c1"># Group the schools by the mean, count and standard deviation for each NYC borough</span>
+<span class="tok-n">schools</span><span class="tok-p">[</span><span class="tok-s2">"num_schools"</span><span class="tok-p">]</span> <span class="tok-o">=</span> <span class="tok-n">schools</span><span class="tok-o">.</span><span class="tok-n">groupby</span><span class="tok-p">(</span><span class="tok-s2">"borough"</span><span class="tok-p">)[</span><span class="tok-s2">"school_name"</span><span class="tok-p">]</span><span class="tok-o">.</span><span class="tok-n">transform</span><span class="tok-p">(</span><span class="tok-s1">'count'</span><span class="tok-p">)</span><span class="tok-o">.</span><span class="tok-n">round</span><span class="tok-p">(</span><span class="tok-mi">2</span><span class="tok-p">)</span>
+<span class="tok-n">schools</span><span class="tok-p">[</span><span class="tok-s2">"average_SAT"</span><span class="tok-p">]</span> <span class="tok-o">=</span> <span class="tok-n">schools</span><span class="tok-o">.</span><span class="tok-n">groupby</span><span class="tok-p">(</span><span class="tok-s2">"borough"</span><span class="tok-p">)[</span><span class="tok-s2">"total_SAT"</span><span class="tok-p">]</span><span class="tok-o">.</span><span class="tok-n">transform</span><span class="tok-p">(</span><span class="tok-s1">'mean'</span><span class="tok-p">)</span><span class="tok-o">.</span><span class="tok-n">round</span><span class="tok-p">(</span><span class="tok-mi">2</span><span class="tok-p">)</span>
+<span class="tok-n">schools</span><span class="tok-p">[</span><span class="tok-s2">"std_SAT"</span><span class="tok-p">]</span> <span class="tok-o">=</span> <span class="tok-n">schools</span><span class="tok-o">.</span><span class="tok-n">groupby</span><span class="tok-p">(</span><span class="tok-s2">"borough"</span><span class="tok-p">)[</span><span class="tok-s2">"total_SAT"</span><span class="tok-p">]</span><span class="tok-o">.</span><span class="tok-n">transform</span><span class="tok-p">(</span><span class="tok-s1">'std'</span><span class="tok-p">)</span><span class="tok-o">.</span><span class="tok-n">round</span><span class="tok-p">(</span><span class="tok-mi">2</span><span class="tok-p">)</span>
+<span class="tok-n">largest_std_dev</span> <span class="tok-o">=</span> <span class="tok-n">schools</span><span class="tok-p">[[</span><span class="tok-s2">"borough"</span><span class="tok-p">,</span> <span class="tok-s2">"num_schools"</span><span class="tok-p">,</span> <span class="tok-s2">"average_SAT"</span><span class="tok-p">,</span> <span class="tok-s2">"std_SAT"</span><span class="tok-p">]]</span><span class="tok-o">.</span><span class="tok-n">sort_values</span><span class="tok-p">(</span><span class="tok-s2">"std_SAT"</span><span class="tok-p">,</span> <span class="tok-n">ascending</span><span class="tok-o">=</span><span class="tok-kc">False</span><span class="tok-p">)</span><span class="tok-o">.</span><span class="tok-n">head</span><span class="tok-p">(</span><span class="tok-mi">1</span><span class="tok-p">)</span>
+
+<span class="tok-nb">print</span><span class="tok-p">(</span><span class="tok-n">best_math_schools</span><span class="tok-p">)</span>
+<span class="tok-nb">print</span><span class="tok-p">(</span><span class="tok-n">top_10_schools</span><span class="tok-p">)</span>
+<span class="tok-nb">print</span><span class="tok-p">(</span><span class="tok-n">largest_std_dev</span><span class="tok-o">.</span><span class="tok-n">head</span><span class="tok-p">())</span></code></pre>
+<div class="nb-out">
+<pre class="nb-text" tabindex="0">                                           school_name  average_math
+88                              Stuyvesant High School           754
+170                       Bronx High School of Science           714
+93                 Staten Island Technical High School           711
+365  Queens High School for the Sciences at York Co...           701
+68   High School for Mathematics, Science, and Engi...           683
+280                     Brooklyn Technical High School           682
+333                        Townsend Harris High School           680
+174  High School of American Studies at Lehman College           669
+0    New Explorations into Science, Technology and ...           657
+45                       Eleanor Roosevelt High School           641
+                                           school_name  total_SAT
+88                              Stuyvesant High School       2144
+170                       Bronx High School of Science       2041
+93                 Staten Island Technical High School       2041
+174  High School of American Studies at Lehman College       2013
+333                        Townsend Harris High School       1981
+365  Queens High School for the Sciences at York Co...       1947
+5                       Bard High School Early College       1914
+280                     Brooklyn Technical High School       1896
+45                       Eleanor Roosevelt High School       1889
+68   High School for Mathematics, Science, and Engi...       1889
+     borough  num_schools  average_SAT  std_SAT
+0  Manhattan           89      1340.13   230.29</pre>
+</div>
+</div>
+    </div>
+  </section>
+
+  <nav class="cs-pager" aria-label="More projects">
+    <div class="wrap">
+      <span></span>
+      <a class="btn ghost" href="../index.html#python-sql">All projects</a>
+      <a class="pg next" href="netflix-1990s-movies.html"><small>Next project</small><strong>Netflix movies of the 1990s</strong></a>
+    </div>
+  </nav>
+
+</main>
+
+<footer class="foot">
+  © <span id="year"></span> Gbolahan Babalobi · Lagos, Nigeria
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.getElementById('navLinks');
+  menuToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuToggle.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+
+</body>
+</html>
